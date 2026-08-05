@@ -133,31 +133,17 @@
                 @endphp
                 
                 <!-- Card Item -->
-                <a href="{{ route('search', ['type' => $type]) }}" class="w-full sm:w-[calc((100%-24px)/2)] md:w-[calc((100%-48px)/3)] flex-shrink-0 snap-start bg-white border border-border-subtle rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(30,64,175,0.08)] hover:-translate-y-1 transition-all duration-300 group cursor-pointer flex flex-col justify-between min-h-[260px] relative overflow-hidden">
+                <a href="{{ route('search', ['type' => $type]) }}" class="w-full sm:w-[calc((100%-24px)/2)] md:w-[calc((100%-48px)/3)] flex-shrink-0 snap-start bg-white border border-slate-200/85 p-6 rounded-2xl shadow-sm flex items-center gap-5 relative overflow-hidden group cursor-pointer hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
+                    <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-slate-500/5 rounded-full group-hover:scale-110 transition-transform duration-500 flex items-center justify-center text-slate-500/10">
+                        {!! $cfg['icon'] !!}
+                    </div>
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-350 {{ $cfg['bg'] }} group-hover:bg-primary group-hover:text-white">
+                        {!! $cfg['icon'] !!}
+                    </div>
                     <div class="relative z-10">
-                        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 group-hover:bg-primary group-hover:text-white {{ $cfg['bg'] }}">
-                            {!! $cfg['icon'] !!}
-                        </div>
-                        <h3 class="font-headline-md text-on-surface mb-3 text-lg font-bold font-display line-clamp-1">{{ $type }}</h3>
-                        <p class="text-xs text-on-surface-variant leading-relaxed line-clamp-3">
-                            Koleksi regulasi resmi untuk kategori {{ $type }} di lingkungan Pemerintah Kabupaten Puncak Jaya.
-                        </p>
-                    </div>
-                    <div class="mt-6 flex items-center justify-between border-t border-border-subtle pt-4 relative z-10">
-                        <span class="text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider border {{ $cfg['badge'] }}">
-                            {{ $count }} Dokumen
-                        </span>
-                        <span class="text-primary opacity-0 group-hover:opacity-100 transition-all -translate-x-4 group-hover:translate-x-0 duration-300">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor" class="w-4 h-4">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                            </svg>
-                        </span>
-                    </div>
-                    <!-- Shaded Watermark Icon -->
-                    <div class="absolute -right-6 -bottom-6 text-slate-100 group-hover:text-primary/5 transition-colors duration-500 pointer-events-none z-0">
-                        <div class="w-28 h-28 opacity-[0.8]">
-                            {!! $cfg['icon'] !!}
-                        </div>
+                        <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 line-clamp-1" title="{{ $type }}">{{ $type }}</h4>
+                        <span class="text-3xl font-black font-display text-slate-800">{{ $count }}</span>
+                        <p class="text-[10px] text-slate-500 font-medium mt-0.5">Dokumen Terbit</p>
                     </div>
                 </a>
             @endforeach
