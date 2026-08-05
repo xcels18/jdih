@@ -13,15 +13,25 @@ class BulkRegulationSeeder extends Seeder
      */
     public function run(): void
     {
+        // Clean the database tables first
+        \Illuminate\Support\Facades\DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        \Illuminate\Support\Facades\DB::table('regulations')->truncate();
+        \Illuminate\Support\Facades\DB::table('regulation_relations')->truncate();
+        \Illuminate\Support\Facades\DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
         $types = [
-            'Peraturan Daerah',
-            'Peraturan Bupati',
-            'Peraturan Kepala Daerah',
-            'Keputusan Bupati',
-            'Instruksi Bupati',
+            'Undang-Undang',
+            'PP',
+            'Perpres',
+            'Peraturan Menteri',
+            'Perda Provinsi',
+            'Pergub',
+            'Perda Kabupaten',
+            'Perbup',
+            'Keputusan',
+            'Instruksi',
             'Surat Edaran',
-            'Peraturan Menteri Dalam Negeri',
-            'Peraturan Menteri Keuangan'
+            'Peraturan Kebijakan'
         ];
 
         $subjects = [
@@ -50,9 +60,9 @@ class BulkRegulationSeeder extends Seeder
             'Pengawasan Intern Penyelenggaraan Pemerintahan oleh Inspektorat Daerah '
         ];
 
-        $this->command->info("Memulai pembuatan 100 data peraturan secara massal...");
+        $this->command->info("Memulai pembuatan 200 data peraturan secara massal...");
 
-        for ($i = 1; $i <= 100; $i++) {
+        for ($i = 1; $i <= 200; $i++) {
             $type = $types[array_rand($types)];
             $year = rand(2020, 2026);
             $number = rand(1, 45);
@@ -72,16 +82,18 @@ class BulkRegulationSeeder extends Seeder
                 'title' => $title,
                 'stipulation_date' => $stipulationDate,
                 'status' => $status,
-                'teu' => ($type == 'Peraturan Menteri Dalam Negeri' || $type == 'Peraturan Menteri Keuangan') 
-                    ? 'Kementerian Republik Indonesia' 
+                'teu' => in_array($type, ['Undang-Undang', 'PP', 'Perpres', 'Peraturan Menteri']) 
+                    ? 'Kementerian / Pemerintah Pusat' 
                     : 'Inspektorat Kabupaten Puncak Jaya',
                 'law_field' => 'Hukum Administrasi Negara',
                 'subject' => $subject,
                 'description' => "Bahwa untuk melaksanakan ketentuan penyelenggaraan pemerintahan daerah yang transparan dan akuntabel di Kabupaten Puncak Jaya, perlu menetapkan {$title}.",
-                'file_path' => null
+                'file_path' => null,
+                'view_count' => rand(15, 680),
+                'download_count' => rand(5, 240)
             ]);
         }
 
-        $this->command->info("Berhasil membuat 100 data peraturan massal!");
+        $this->command->info("Berhasil membuat 200 data peraturan massal!");
     }
 }

@@ -36,17 +36,25 @@ class AdminRegulationController extends Controller
         $regulations = $query->orderBy('stipulation_date', 'desc')->paginate(20)->withQueryString();
         
         $availableTypes = [
-            'Peraturan Daerah',
-            'Peraturan Bupati',
-            'Peraturan Kepala Daerah',
-            'Keputusan Bupati',
-            'Instruksi Bupati',
-            'Surat Edaran',
-            'Pengumuman',
-            'Keputusan Dewan'
+            'Undang-Undang', 'Perppu', 'PP', 'Perpres', 'Peraturan Menteri',
+            'Peraturan MA', 'Peraturan MK', 'Peraturan BI', 'Peraturan OJK',
+            'Perda Provinsi', 'Pergub', 'Perda Kabupaten', 'Perda Kota', 'Perbup', 'Perwali',
+            'Perdes', 'Peraturan Kepala Desa', 'Peraturan Bersama Kepala Desa',
+            'Keputusan', 'Instruksi', 'Surat Edaran', 'Peraturan Kebijakan',
+            'Produk Hukum DPR/DPRD', 'Produk Hukum Desa', 'Dokumen Legislasi',
+            'Dokumen Persidangan', 'Putusan', 'Perjanjian', 'Dokumen Hukum Lainnya'
         ];
 
-        return view('admin.index', compact('regulations', 'availableTypes'));
+        // Compute dashboard statistics
+        $stats = [
+            'total' => Regulation::count(),
+            'perda' => Regulation::whereIn('type', ['Perda Provinsi', 'Perda Kabupaten', 'Perda Kota'])->count(),
+            'perbup' => Regulation::where('type', 'Perbup')->count(),
+            'kepbup' => Regulation::where('type', 'Keputusan')->count(),
+            'others' => Regulation::whereNotIn('type', ['Perda Provinsi', 'Perda Kabupaten', 'Perda Kota', 'Perbup', 'Keputusan'])->count(),
+        ];
+
+        return view('admin.index', compact('regulations', 'availableTypes', 'stats'));
     }
 
     public function create()
@@ -59,15 +67,19 @@ class AdminRegulationController extends Controller
     {
         $request->validate([
             'type' => 'required|string',
+            'document_type' => 'required|string',
             'number' => 'required|string',
+            'publishing_place' => 'required|string',
             'year' => 'required|integer',
             'title' => 'required|string',
             'stipulation_date' => 'required|date',
+            'promulgation_date' => 'nullable|date',
             'status' => 'required|in:active,revoked,amended',
             'description' => 'nullable|string',
             'file' => 'nullable|mimes:pdf|max:20480', // max 20MB
             'teu' => 'required|string',
             'law_field' => 'required|string',
+            'gov_affairs' => 'nullable|string',
             'subject' => 'required|string',
             'related_regulation_id' => 'nullable|exists:regulations,id',
             'relation_type' => 'nullable|required_with:related_regulation_id|in:revokes,revoked_by,amends,amended_by',
@@ -80,15 +92,19 @@ class AdminRegulationController extends Controller
 
         $regulation = Regulation::create([
             'type' => $request->type,
+            'document_type' => $request->document_type,
             'number' => $request->number,
+            'publishing_place' => $request->publishing_place,
             'year' => $request->year,
             'title' => $request->title,
             'stipulation_date' => $request->stipulation_date,
+            'promulgation_date' => $request->promulgation_date,
             'status' => $request->status,
             'description' => $request->description,
             'file_path' => $filePath,
             'teu' => $request->teu,
             'law_field' => $request->law_field,
+            'gov_affairs' => $request->gov_affairs,
             'subject' => $request->subject,
         ]);
 
@@ -143,15 +159,19 @@ class AdminRegulationController extends Controller
 
         $request->validate([
             'type' => 'required|string',
+            'document_type' => 'required|string',
             'number' => 'required|string',
+            'publishing_place' => 'required|string',
             'year' => 'required|integer',
             'title' => 'required|string',
             'stipulation_date' => 'required|date',
+            'promulgation_date' => 'nullable|date',
             'status' => 'required|in:active,revoked,amended',
             'description' => 'nullable|string',
             'file' => 'nullable|mimes:pdf|max:20480',
             'teu' => 'required|string',
             'law_field' => 'required|string',
+            'gov_affairs' => 'nullable|string',
             'subject' => 'required|string',
             'related_regulation_id' => 'nullable|exists:regulations,id',
             'relation_type' => 'nullable|required_with:related_regulation_id|in:revokes,revoked_by,amends,amended_by',
@@ -163,18 +183,27 @@ class AdminRegulationController extends Controller
                 Storage::disk('public')->delete($regulation->file_path);
             }
             $regulation->file_path = $request->file('file')->store('regulations', 'public');
+        } elseif ($request->input('delete_file') == '1') {
+            if ($regulation->file_path) {
+                Storage::disk('public')->delete($regulation->file_path);
+            }
+            $regulation->file_path = null;
         }
 
         $regulation->update([
             'type' => $request->type,
+            'document_type' => $request->document_type,
             'number' => $request->number,
+            'publishing_place' => $request->publishing_place,
             'year' => $request->year,
             'title' => $request->title,
             'stipulation_date' => $request->stipulation_date,
+            'promulgation_date' => $request->promulgation_date,
             'status' => $request->status,
             'description' => $request->description,
             'teu' => $request->teu,
             'law_field' => $request->law_field,
+            'gov_affairs' => $request->gov_affairs,
             'subject' => $request->subject,
         ]);
 

@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [RegulationController::class, 'index'])->name('landing');
 Route::get('/search', [RegulationController::class, 'search'])->name('search');
 Route::get('/regulation/{id}', [RegulationController::class, 'show'])->name('detail');
+Route::get('/regulation/{id}/download', [RegulationController::class, 'download'])->name('regulation.download');
 Route::get('/statistics', [RegulationController::class, 'statistics'])->name('stats');
+Route::get('/statistics/export', [RegulationController::class, 'exportExcel'])->name('stats.export');
 
 // Authentication Routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');

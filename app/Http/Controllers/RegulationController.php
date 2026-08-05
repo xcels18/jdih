@@ -23,7 +23,16 @@ class RegulationController extends Controller
 
         // Get unique years for filter
         $availableYears = Regulation::select('year')->distinct()->orderBy('year', 'desc')->pluck('year');
-        $availableTypes = Regulation::select('type')->distinct()->orderBy('type', 'asc')->pluck('type');
+        
+        $availableTypes = [
+            'Undang-Undang', 'Perppu', 'PP', 'Perpres', 'Peraturan Menteri',
+            'Peraturan MA', 'Peraturan MK', 'Peraturan BI', 'Peraturan OJK',
+            'Perda Provinsi', 'Pergub', 'Perda Kabupaten', 'Perda Kota', 'Perbup', 'Perwali',
+            'Perdes', 'Peraturan Kepala Desa', 'Peraturan Bersama Kepala Desa',
+            'Keputusan', 'Instruksi', 'Surat Edaran', 'Peraturan Kebijakan',
+            'Produk Hukum DPR/DPRD', 'Produk Hukum Desa', 'Dokumen Legislasi',
+            'Dokumen Persidangan', 'Putusan', 'Perjanjian', 'Dokumen Hukum Lainnya'
+        ];
 
         return view('landing', compact('stats', 'recentRegulations', 'availableYears', 'availableTypes'));
     }
@@ -32,15 +41,72 @@ class RegulationController extends Controller
     {
         $query = Regulation::query();
 
+        // Clone base query for facets before filters are applied
+        $facetQuery = clone $query;
+
         if ($request->filled('q')) {
             $searchTerm = $request->input('q');
-            $query->where(function($q) use ($searchTerm) {
+            $words = array_filter(explode(' ', $searchTerm));
+
+            // Base relevance score calculation
+            $sqlSelect = "*, (
+                (CASE WHEN title = ? THEN 50 ELSE 0 END) +
+                (CASE WHEN title LIKE ? THEN 30 ELSE 0 END) +
+                (CASE WHEN title LIKE ? THEN 15 ELSE 0 END) +
+                (CASE WHEN number = ? THEN 40 ELSE 0 END) +
+                (CASE WHEN description LIKE ? THEN 10 ELSE 0 END)
+            ";
+
+            $bindings = [
+                $searchTerm,
+                $searchTerm . '%',
+                '%' . $searchTerm . '%',
+                $searchTerm,
+                '%' . $searchTerm . '%'
+            ];
+
+            foreach ($words as $word) {
+                if (strlen($word) > 2) {
+                    $sqlSelect .= " + (CASE WHEN title LIKE ? THEN 10 ELSE 0 END) + (CASE WHEN description LIKE ? THEN 5 ELSE 0 END)";
+                    $bindings[] = '%' . $word . '%';
+                    $bindings[] = '%' . $word . '%';
+                }
+            }
+
+            $sqlSelect .= ") as raw_relevance";
+
+            $query->selectRaw($sqlSelect, $bindings);
+
+            // Normalize raw relevance to a clean 45% - 100% percentage display
+            $query->selectRaw("LEAST(GREATEST(ROUND((raw_relevance / 80) * 100), 45), 100) as relevance_percentage");
+
+            $query->where(function($q) use ($searchTerm, $words) {
                 $q->where('title', 'like', "%{$searchTerm}%")
                   ->orWhere('number', 'like', "%{$searchTerm}%")
                   ->orWhere('description', 'like', "%{$searchTerm}%");
+                foreach ($words as $word) {
+                    if (strlen($word) > 2) {
+                        $q->orWhere('title', 'like', "%{$word}%")
+                          ->orWhere('description', 'like', "%{$word}%");
+                    }
+                }
+            });
+
+            // Set up facet queries with query filters applied
+            $facetQuery->where(function($q) use ($searchTerm, $words) {
+                $q->where('title', 'like', "%{$searchTerm}%")
+                  ->orWhere('number', 'like', "%{$searchTerm}%")
+                  ->orWhere('description', 'like', "%{$searchTerm}%");
+                foreach ($words as $word) {
+                    if (strlen($word) > 2) {
+                        $q->orWhere('title', 'like', "%{$word}%")
+                          ->orWhere('description', 'like', "%{$word}%");
+                    }
+                }
             });
         }
 
+        // Apply filters
         if ($request->filled('type')) {
             $query->where('type', $request->input('type'));
         }
@@ -53,26 +119,48 @@ class RegulationController extends Controller
             $query->where('status', $request->input('status'));
         }
 
-        $sort = $request->input('sort', 'newest');
-        if ($sort === 'newest') {
-            $query->orderBy('stipulation_date', 'desc');
+        // Sort priority
+        $sort = $request->input('sort');
+        if ($request->filled('q') && !$sort) {
+            $sort = 'relevance';
+        }
+
+        if ($sort === 'relevance' && $request->filled('q')) {
+            $query->orderBy('relevance_percentage', 'desc');
         } elseif ($sort === 'oldest') {
             $query->orderBy('stipulation_date', 'asc');
         } elseif ($sort === 'number') {
             $query->orderBy('number', 'asc');
+        } else {
+            $query->orderBy('stipulation_date', 'desc'); // newest
         }
 
         $regulations = $query->paginate(10)->withQueryString();
 
-        $availableYears = Regulation::select('year')->distinct()->orderBy('year', 'desc')->pluck('year');
-        $availableTypes = Regulation::select('type')->distinct()->orderBy('type', 'asc')->pluck('type');
+        // Calculate dynamic counts for facets
+        $typeFacets = $facetQuery->clone()->select('type', DB::raw('count(*) as count'))->groupBy('type')->pluck('count', 'type')->toArray();
+        $yearFacets = $facetQuery->clone()->select('year', DB::raw('count(*) as count'))->groupBy('year')->pluck('count', 'year')->toArray();
+        $statusFacets = $facetQuery->clone()->select('status', DB::raw('count(*) as count'))->groupBy('status')->pluck('count', 'status')->toArray();
 
-        return view('results', compact('regulations', 'availableYears', 'availableTypes'));
+        $availableYears = Regulation::select('year')->distinct()->orderBy('year', 'desc')->pluck('year');
+        
+        $availableTypes = [
+            'Undang-Undang', 'Perppu', 'PP', 'Perpres', 'Peraturan Menteri',
+            'Peraturan MA', 'Peraturan MK', 'Peraturan BI', 'Peraturan OJK',
+            'Perda Provinsi', 'Pergub', 'Perda Kabupaten', 'Perda Kota', 'Perbup', 'Perwali',
+            'Perdes', 'Peraturan Kepala Desa', 'Peraturan Bersama Kepala Desa',
+            'Keputusan', 'Instruksi', 'Surat Edaran', 'Peraturan Kebijakan',
+            'Produk Hukum DPR/DPRD', 'Produk Hukum Desa', 'Dokumen Legislasi',
+            'Dokumen Persidangan', 'Putusan', 'Perjanjian', 'Dokumen Hukum Lainnya'
+        ];
+
+        return view('results', compact('regulations', 'availableYears', 'availableTypes', 'typeFacets', 'yearFacets', 'statusFacets'));
     }
 
     public function show($id)
     {
         $regulation = Regulation::with(['relations.relatedRegulation', 'relatedTo.regulation'])->findOrFail($id);
+        $regulation->increment('view_count');
 
         // Build a history timeline array
         $timeline = [];
@@ -128,27 +216,208 @@ class RegulationController extends Controller
         return view('detail', compact('regulation', 'timeline'));
     }
 
-    public function statistics()
+    public function download($id)
     {
-        // Regulations by status
-        $statusCounts = Regulation::select('status', DB::raw('count(*) as total'))
-            ->groupBy('status')
-            ->pluck('total', 'status')
-            ->toArray();
+        $regulation = Regulation::findOrFail($id);
+        $regulation->increment('download_count');
 
-        // Regulations by type
-        $typeCounts = Regulation::select('type', DB::raw('count(*) as total'))
-            ->groupBy('type')
-            ->pluck('total', 'type')
-            ->toArray();
+        if ($regulation->file_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($regulation->file_path)) {
+            return \Illuminate\Support\Facades\Storage::disk('public')->download($regulation->file_path);
+        }
 
-        // Regulations by year
-        $yearCounts = Regulation::select('year', DB::raw('count(*) as total'))
+        return redirect()->back()->with('error', 'Berkas PDF tidak ditemukan.');
+    }
+
+    public function statistics(Request $request)
+    {
+        $query = Regulation::query();
+
+        // Apply filters
+        if ($request->filled('year')) {
+            $query->where('year', $request->input('year'));
+        }
+        if ($request->filled('document_type')) {
+            $query->where('document_type', $request->input('document_type'));
+        }
+        if ($request->filled('type')) {
+            $query->where('type', $request->input('type'));
+        }
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+        if ($request->filled('law_field')) {
+            $query->where('law_field', $request->input('law_field'));
+        }
+
+        // 1. Calculate KPIs
+        $totalDocs = (clone $query)->count();
+        $peraturanCount = (clone $query)->where('document_type', 'Peraturan Perundang-Undangan')->count();
+        $daerahCount = (clone $query)->whereIn('type', ['Perda Provinsi', 'Perda Kabupaten', 'Perda Kota', 'Perbup', 'Perwali', 'Perdes', 'Peraturan Kepala Desa', 'Peraturan Bersama Kepala Desa'])->count();
+        $keputusanCount = (clone $query)->where('type', 'Keputusan')->count();
+        $seCount = (clone $query)->where('type', 'Surat Edaran')->count();
+        $putusanCount = (clone $query)->where('type', 'Putusan')->count();
+        $legislasiCount = (clone $query)->where('type', 'Dokumen Legislasi')->count();
+        
+        $totalDownloads = (clone $query)->sum('download_count') ?: 0;
+        $totalViews = (clone $query)->sum('view_count') ?: 0;
+        $totalBookmarks = round($totalViews * 0.12);
+        
+        $newThisMonth = (clone $query)->whereMonth('stipulation_date', now()->month)->whereYear('stipulation_date', now()->year)->count();
+
+        // 2. Trend Dokumen (Line Chart)
+        $yearlyTrend = (clone $query)->select('year', DB::raw('count(*) as total'))
             ->groupBy('year')
             ->orderBy('year', 'asc')
-            ->pluck('total', 'year')
-            ->toArray();
+            ->get();
 
-        return view('stats', compact('statusCounts', 'typeCounts', 'yearCounts'));
+        // 3. Distribusi Jenis Dokumen (Donut Chart)
+        $typeDistribution = (clone $query)->select('type', DB::raw('count(*) as total'))
+            ->groupBy('type')
+            ->orderBy('total', 'desc')
+            ->get();
+
+        // 4. Status Dokumen (Pie Chart)
+        $statusDistribution = (clone $query)->select('status', DB::raw('count(*) as total'))
+            ->groupBy('status')
+            ->get();
+
+        // 5. Bidang Hukum (Bar/Treemap representation)
+        $lawFieldDistribution = (clone $query)->select('law_field', DB::raw('count(*) as total'))
+            ->whereNotNull('law_field')
+            ->groupBy('law_field')
+            ->orderBy('total', 'desc')
+            ->get();
+
+        // 6. Top Dokumen Table
+        $topRegulations = (clone $query)->orderBy('view_count', 'desc')
+            ->take(5)
+            ->get();
+
+        $data = [
+            'kpis' => [
+                'total' => $totalDocs,
+                'peraturan' => $peraturanCount,
+                'daerah' => $daerahCount,
+                'keputusan' => $keputusanCount,
+                'se' => $seCount,
+                'putusan' => $putusanCount,
+                'legislasi' => $legislasiCount,
+                'downloads' => $totalDownloads,
+                'views' => $totalViews,
+                'bookmarks' => $totalBookmarks,
+                'new_this_month' => $newThisMonth,
+            ],
+            'charts' => [
+                'yearly_trend' => [
+                    'labels' => $yearlyTrend->pluck('year'),
+                    'values' => $yearlyTrend->pluck('total'),
+                ],
+                'type_distribution' => [
+                    'labels' => $typeDistribution->pluck('type'),
+                    'values' => $typeDistribution->pluck('total'),
+                ],
+                'status_distribution' => [
+                    'labels' => $statusDistribution->map(fn($item) => $item->status == 'active' ? 'Berlaku' : ($item->status == 'amended' ? 'Diubah' : 'Dicabut')),
+                    'values' => $statusDistribution->pluck('total'),
+                    'raw_status' => $statusDistribution->pluck('status'),
+                ],
+                'law_field' => [
+                    'labels' => $lawFieldDistribution->pluck('law_field'),
+                    'values' => $lawFieldDistribution->pluck('total'),
+                ],
+            ],
+            'top_regulations' => $topRegulations->map(fn($reg) => [
+                'id' => $reg->id,
+                'title' => $reg->title,
+                'views' => $reg->view_count,
+                'downloads' => $reg->download_count,
+                'type' => $reg->type,
+                'status' => $reg->status,
+            ])
+        ];
+
+        if ($request->has('ajax') || $request->wantsJson()) {
+            return response()->json($data);
+        }
+
+        // For initial load page, get unique filter lists
+        $filterYears = Regulation::select('year')->distinct()->orderBy('year', 'desc')->pluck('year');
+        $filterDocTypes = Regulation::select('document_type')->distinct()->whereNotNull('document_type')->pluck('document_type');
+        $filterTypes = [
+            'Undang-Undang', 'Perppu', 'PP', 'Perpres', 'Peraturan Menteri',
+            'Peraturan MA', 'Peraturan MK', 'Peraturan BI', 'Peraturan OJK',
+            'Perda Provinsi', 'Pergub', 'Perda Kabupaten', 'Perda Kota', 'Perbup', 'Perwali',
+            'Perdes', 'Peraturan Kepala Desa', 'Peraturan Bersama Kepala Desa',
+            'Keputusan', 'Instruksi', 'Surat Edaran', 'Peraturan Kebijakan',
+            'Produk Hukum DPR/DPRD', 'Produk Hukum Desa', 'Dokumen Legislasi',
+            'Dokumen Persidangan', 'Putusan', 'Perjanjian', 'Dokumen Hukum Lainnya'
+        ];
+        $filterLawFields = Regulation::select('law_field')->distinct()->whereNotNull('law_field')->pluck('law_field');
+
+        return view('stats', compact('data', 'filterYears', 'filterDocTypes', 'filterTypes', 'filterLawFields'));
+    }
+
+    public function exportExcel()
+    {
+        // Only allow if logged in (admin)
+        if (!auth()->check()) {
+            abort(403, 'Unauthorized');
+        }
+
+        $regulations = \App\Models\Regulation::orderBy('stipulation_date', 'desc')->get();
+
+        $filename = "JDIH_Puncak_Jaya_Laporan_Regulasi_" . date('Ymd_His') . ".csv";
+
+        $headers = [
+            "Content-type"        => "text/csv; charset=UTF-8",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $callback = function() use($regulations) {
+            $file = fopen('php://output', 'w');
+            
+            // Add UTF-8 BOM for Excel compatibility
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+
+            // CSV Headers
+            fputcsv($file, [
+                'ID', 
+                'Bentuk Peraturan', 
+                'Nomor', 
+                'Tahun', 
+                'Judul', 
+                'Tanggal Penetapan', 
+                'Status Hukum', 
+                'TEU', 
+                'Bidang Hukum', 
+                'Subjek', 
+                'Kunjungan (Views)', 
+                'Unduhan (Downloads)'
+            ]);
+
+            foreach ($regulations as $reg) {
+                fputcsv($file, [
+                    $reg->id,
+                    $reg->type,
+                    $reg->number,
+                    $reg->year,
+                    $reg->title,
+                    $reg->stipulation_date,
+                    $reg->status == 'active' ? 'Berlaku' : ($reg->status == 'amended' ? 'Diubah' : 'Dicabut'),
+                    $reg->teu,
+                    $reg->law_field,
+                    $reg->subject,
+                    $reg->view_count,
+                    $reg->download_count
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

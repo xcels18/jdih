@@ -68,103 +68,120 @@
         <div class="w-16 h-1 bg-primary mx-auto mt-4 rounded-full"></div>
     </div>
     
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- Card 1: Peraturan Daerah -->
-        <a href="{{ route('search', ['type' => 'Peraturan Daerah']) }}" class="bg-white border border-border-subtle rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(30,64,175,0.08)] hover:-translate-y-1 transition-all duration-300 group cursor-pointer flex flex-col justify-between min-h-[260px] interactive-transition card-glowing-primary">
-            <div>
-                <div class="w-14 h-14 bg-primary/5 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 group-hover:bg-primary group-hover:text-white text-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0 0 12 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75Z" />
-                    </svg>
-                </div>
-                <h3 class="font-headline-md text-on-surface mb-3 text-xl font-bold font-display">Peraturan Daerah</h3>
-                <p class="text-xs text-on-surface-variant leading-relaxed">Produk hukum tertinggi daerah yang ditetapkan oleh Bupati dengan persetujuan bersama DPRD.</p>
-            </div>
-            <div class="mt-6 flex items-center justify-between border-t border-border-subtle pt-4">
-                <span class="text-[10px] font-bold text-primary bg-primary/5 px-3 py-1.5 rounded-full uppercase tracking-wider">{{ $stats['perda'] ?? 0 }} Dokumen</span>
-                <span class="material-symbols-outlined text-primary opacity-0 group-hover:opacity-100 transition-opacity -translate-x-4 group-hover:translate-x-0 duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                    </svg>
-                </span>
-            </div>
-        </a>
+    @php
+        $typeConfig = [
+            'Peraturan Daerah' => [
+                'icon' => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0 0 12 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75Z" /></svg>',
+                'bg' => 'bg-amber-500/5 hover:bg-amber-500 text-amber-500',
+                'badge' => 'text-amber-600 bg-amber-500/10 border-amber-500/20'
+            ],
+            'Peraturan Bupati' => [
+                'icon' => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-16.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-16.25v16.25" /></svg>',
+                'bg' => 'bg-emerald-500/5 hover:bg-emerald-500 text-emerald-500',
+                'badge' => 'text-emerald-600 bg-emerald-500/10 border-emerald-500/20'
+            ],
+            'Keputusan Bupati' => [
+                'icon' => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.375M9 18h3.375m-6.75 3h12a3 3 0 0 0 3-3V6a3 3 0 0 0-3-3H5.25a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3Zm3.15-11.777L9 6.75l2.25 2.25L9 11.25l2.25 2.25L9 15.75l2.25 2.25" /></svg>',
+                'bg' => 'bg-blue-500/5 hover:bg-blue-500 text-blue-500',
+                'badge' => 'text-blue-600 bg-blue-500/10 border-blue-500/20'
+            ],
+            'Peraturan Kepala Daerah' => [
+                'icon' => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-9h.75m-.75 3h.75m-.75 3h.75m3 3h.75m-.75 3h.75m-.75 3h.75M4 21h16" /></svg>',
+                'bg' => 'bg-indigo-500/5 hover:bg-indigo-500 text-indigo-500',
+                'badge' => 'text-indigo-600 bg-indigo-500/10 border-indigo-500/20'
+            ],
+            'Instruksi Bupati' => [
+                'icon' => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.375M9 18h3.375m-6.75 3h12a3 3 0 0 0 3-3V6a3 3 0 0 0-3-3H5.25a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3Zm3.15-11.777L9 6.75l2.25 2.25L9 11.25l2.25 2.25L9 15.75l2.25 2.25" /></svg>',
+                'bg' => 'bg-rose-500/5 hover:bg-rose-500 text-rose-500',
+                'badge' => 'text-rose-600 bg-rose-500/10 border-rose-500/20'
+            ],
+            'Surat Edaran' => [
+                'icon' => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z" /></svg>',
+                'bg' => 'bg-violet-500/5 hover:bg-violet-500 text-violet-500',
+                'badge' => 'text-violet-600 bg-violet-500/10 border-violet-500/20'
+            ],
+            'default' => [
+                'icon' => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" /></svg>',
+                'bg' => 'bg-primary/5 hover:bg-primary text-primary',
+                'badge' => 'text-primary bg-primary/10 border-primary/20'
+            ]
+        ];
+    @endphp
 
-        <!-- Card 2: Peraturan Bupati -->
-        <a href="{{ route('search', ['type' => 'Peraturan Bupati']) }}" class="bg-white border border-border-subtle rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(20,184,166,0.08)] hover:-translate-y-1 transition-all duration-300 group cursor-pointer flex flex-col justify-between min-h-[260px] interactive-transition card-glowing-primary">
-            <div>
-                <div class="w-14 h-14 bg-primary/5 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 group-hover:bg-primary group-hover:text-white text-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-16.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-16.25v16.25" />
-                    </svg>
-                </div>
-                <h3 class="font-headline-md text-on-surface mb-3 text-xl font-bold font-display">Peraturan Bupati</h3>
-                <p class="text-xs text-on-surface-variant leading-relaxed">Ketentuan pelaksana yang dikeluarkan oleh Bupati untuk menjalankan urusan otonomi daerah.</p>
-            </div>
-            <div class="mt-6 flex items-center justify-between border-t border-border-subtle pt-4">
-                <span class="text-[10px] font-bold text-primary bg-primary/5 px-3 py-1.5 rounded-full uppercase tracking-wider">{{ $stats['perbup'] ?? 0 }} Dokumen</span>
-                <span class="material-symbols-outlined text-primary opacity-0 group-hover:opacity-100 transition-opacity -translate-x-4 group-hover:translate-x-0 duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                    </svg>
-                </span>
-            </div>
-        </a>
-
-        <!-- Card 3: Keputusan Bupati -->
-        <a href="{{ route('search', ['type' => 'Keputusan Bupati']) }}" class="bg-white border border-border-subtle rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(49,107,243,0.08)] hover:-translate-y-1 transition-all duration-300 group cursor-pointer flex flex-col justify-between min-h-[260px] interactive-transition card-glowing-primary">
-            <div>
-                <div class="w-14 h-14 bg-primary/5 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 group-hover:bg-primary group-hover:text-white text-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.375M9 18h3.375m-6.75 3h12a3 3 0 0 0 3-3V6a3 3 0 0 0-3-3H5.25a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3Zm3.15-11.777L9 6.75l2.25 2.25L9 11.25l2.25 2.25L9 15.75l2.25 2.25" />
-                    </svg>
-                </div>
-                <h3 class="font-headline-md text-on-surface mb-3 text-xl font-bold font-display">Keputusan Bupati</h3>
-                <p class="text-xs text-on-surface-variant leading-relaxed">Keputusan penetapan yang bersifat konkret, individual, dan sekali-selesai untuk instansi daerah.</p>
-            </div>
-            <div class="mt-6 flex items-center justify-between border-t border-border-subtle pt-4">
-                <span class="text-[10px] font-bold text-primary bg-primary/5 px-3 py-1.5 rounded-full uppercase tracking-wider">{{ $stats['kepbup'] ?? 0 }} Dokumen</span>
-                <span class="material-symbols-outlined text-primary opacity-0 group-hover:opacity-100 transition-opacity -translate-x-4 group-hover:translate-x-0 duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                    </svg>
-                </span>
-            </div>
-        </a>
-
-        <!-- Card 4 (Wide): Other Regulations (PERKADA, Instruksi, SE) -->
-        <div class="md:col-span-2 bg-gradient-to-br from-white to-[#faf8ff] border border-border-subtle rounded-3xl p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-lg transition-all duration-300 flex items-center relative overflow-hidden group">
-            <div class="z-10 w-2/3 relative space-y-4">
-                <span class="text-[10px] font-extrabold text-status-active bg-status-active/10 px-3 py-1 rounded-full inline-block uppercase tracking-wider border border-status-active/20 font-sans">Koleksi Lengkap</span>
-                <h3 class="font-headline-md text-on-surface text-2xl font-bold font-display leading-tight">PERKADA, Surat Edaran & Instruksi</h3>
-                <p class="text-xs text-on-surface-variant leading-relaxed">Akses dokumen kebijakan pendukung lainnya termasuk Peraturan Kepala Daerah (PERKADA), Surat Edaran (SE) Bupati, Instruksi Bupati, dan Pengumuman Resmi.</p>
-                <a class="bg-primary hover:bg-primary-container text-white px-6 py-3 rounded-xl font-label-md text-xs font-bold uppercase tracking-wider transition-all inline-flex items-center gap-2 shadow-md shadow-primary/20" href="{{ route('search') }}">
-                    Lihat Koleksi 
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                    </svg>
-                </a>
-            </div>
-            <div class="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-primary/5 to-transparent pointer-events-none"></div>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="0.5" stroke="currentColor" class="absolute -right-8 -bottom-8 w-44 h-44 text-primary/5 group-hover:text-primary/10 transition-colors duration-500 transform -rotate-12">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-            </svg>
+    <!-- Slider Wrapper Container -->
+    <div class="relative group">
+        <!-- Navigation Buttons -->
+        <div class="absolute -top-14 right-0 flex gap-2 z-20">
+            <button id="slide-prev" class="w-10 h-10 rounded-xl border border-slate-200 bg-white text-slate-650 hover:bg-slate-50 flex items-center justify-center cursor-pointer transition shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                </svg>
+            </button>
+            <button id="slide-next" class="w-10 h-10 rounded-xl border border-slate-200 bg-white text-slate-650 hover:bg-slate-50 flex items-center justify-center cursor-pointer transition shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                </svg>
+            </button>
         </div>
 
-        <!-- Card 5: Advanced Search & Analytics -->
-        <a href="{{ route('stats') }}" class="bg-white border border-border-subtle rounded-3xl p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-lg transition-all duration-300 flex flex-col justify-center items-center text-center group interactive-transition card-glowing-primary">
-            <div class="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 group-hover:bg-primary group-hover:text-white text-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" />
+        <!-- Scrollable Track -->
+        <div id="carousel-track" class="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4 no-scrollbar">
+            @foreach($availableTypes as $type)
+                @php
+                    $count = \App\Models\Regulation::where('type', $type)->count();
+                    $cfg = $typeConfig[$type] ?? $typeConfig['default'];
+                @endphp
+                
+                <!-- Card Item -->
+                <a href="{{ route('search', ['type' => $type]) }}" class="w-full sm:w-[calc((100%-24px)/2)] md:w-[calc((100%-48px)/3)] flex-shrink-0 snap-start bg-white border border-border-subtle rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(30,64,175,0.08)] hover:-translate-y-1 transition-all duration-300 group cursor-pointer flex flex-col justify-between min-h-[260px] relative overflow-hidden">
+                    <div class="relative z-10">
+                        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 group-hover:bg-primary group-hover:text-white {{ $cfg['bg'] }}">
+                            {!! $cfg['icon'] !!}
+                        </div>
+                        <h3 class="font-headline-md text-on-surface mb-3 text-lg font-bold font-display line-clamp-1">{{ $type }}</h3>
+                        <p class="text-xs text-on-surface-variant leading-relaxed line-clamp-3">
+                            Koleksi regulasi resmi untuk kategori {{ $type }} di lingkungan Pemerintah Kabupaten Puncak Jaya.
+                        </p>
+                    </div>
+                    <div class="mt-6 flex items-center justify-between border-t border-border-subtle pt-4 relative z-10">
+                        <span class="text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider border {{ $cfg['badge'] }}">
+                            {{ $count }} Dokumen
+                        </span>
+                        <span class="text-primary opacity-0 group-hover:opacity-100 transition-all -translate-x-4 group-hover:translate-x-0 duration-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor" class="w-4 h-4">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                            </svg>
+                        </span>
+                    </div>
+                    <!-- Shaded Watermark Icon -->
+                    <div class="absolute -right-6 -bottom-6 text-slate-100 group-hover:text-primary/5 transition-colors duration-500 pointer-events-none z-0">
+                        <div class="w-28 h-28 opacity-[0.8]">
+                            {!! $cfg['icon'] !!}
+                        </div>
+                    </div>
+                </a>
+            @endforeach
+        </div>
+    </div>
+
+    <!-- Bottom Banner Card: Other Regulations (PERKADA, Instruksi, SE) -->
+    <div class="mt-8 bg-gradient-to-br from-white to-[#faf8ff] border border-border-subtle rounded-3xl p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-lg transition-all duration-300 flex items-center relative overflow-hidden group">
+        <div class="z-10 w-full md:w-2/3 relative space-y-4">
+            <span class="text-[10px] font-extrabold text-status-active bg-status-active/10 px-3 py-1 rounded-full inline-block uppercase tracking-wider border border-status-active/20 font-sans">Koleksi Lengkap</span>
+            <h3 class="font-headline-md text-on-surface text-2xl font-bold font-display leading-tight">PERKADA, Surat Edaran & Instruksi</h3>
+            <p class="text-xs text-on-surface-variant leading-relaxed">Akses dokumen kebijakan pendukung lainnya termasuk Peraturan Kepala Daerah (PERKADA), Surat Edaran (SE) Bupati, Instruksi Bupati, dan Pengumuman Resmi.</p>
+            <a class="bg-primary hover:bg-primary-container text-white px-6 py-3 rounded-xl font-label-md text-xs font-bold uppercase tracking-wider transition-all inline-flex items-center gap-2 shadow-md shadow-primary/20" href="{{ route('search') }}">
+                Lihat Koleksi 
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
                 </svg>
-            </div>
-            <h3 class="font-headline-md text-on-surface mb-2 text-xl font-bold font-display">Statistik & Tren</h3>
-            <p class="text-xs text-on-surface-variant mb-6">Visualisasikan sebaran tren regulasi secara digital.</p>
-            <button class="border-2 border-primary/20 text-primary px-6 py-2.5 rounded-lg font-label-md text-xs font-bold uppercase tracking-wider hover:bg-primary/5 hover:border-primary transition-all w-full cursor-pointer">
-                Buka Analitik
-            </button>
-        </a>
+            </a>
+        </div>
+        <div class="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-primary/5 to-transparent pointer-events-none"></div>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="0.5" stroke="currentColor" class="absolute -right-8 -bottom-8 w-44 h-44 text-primary/5 group-hover:text-primary/10 transition-colors duration-500 transform -rotate-12">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+        </svg>
+    </div>
     </div>
 </section>
 
@@ -290,8 +307,37 @@
     </div>
 </section>
 
-<!-- Search shortcut keyboard focus -->
+<!-- Style & Carousel script -->
+<style>
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>
+
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const track = document.getElementById('carousel-track');
+        const prev = document.getElementById('slide-prev');
+        const next = document.getElementById('slide-next');
+        
+        if (track && prev && next) {
+            prev.addEventListener('click', () => {
+                const firstCard = track.querySelector('a');
+                const cardWidth = firstCard ? firstCard.offsetWidth : 360;
+                track.scrollBy({ left: -(cardWidth + 24), behavior: 'smooth' });
+            });
+            next.addEventListener('click', () => {
+                const firstCard = track.querySelector('a');
+                const cardWidth = firstCard ? firstCard.offsetWidth : 360;
+                track.scrollBy({ left: cardWidth + 24, behavior: 'smooth' });
+            });
+        }
+    });
+
     document.addEventListener('keydown', function(e) {
         if (e.key === '/') {
             const searchInput = document.getElementById('landing-search');

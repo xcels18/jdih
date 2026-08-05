@@ -22,11 +22,14 @@
                 
                 <!-- Filter Type -->
                 <div class="space-y-2">
-                    <label class="text-xs font-bold text-on-surface uppercase tracking-wide">Jenis Peraturan</label>
+                    <label class="text-xs font-bold text-on-surface uppercase tracking-wide">Bentuk Peraturan</label>
                     <select name="type" class="w-full border border-border-subtle rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary bg-bg-base">
-                        <option value="">Semua Jenis</option>
+                        <option value="">Semua Bentuk ({{ array_sum($typeFacets) }})</option>
                         @foreach($availableTypes as $type)
-                            <option value="{{ $type }}" {{ request('type') == $type ? 'selected' : '' }}>{{ $type }}</option>
+                            @php $cnt = $typeFacets[$type] ?? 0; @endphp
+                            @if($cnt > 0 || request('type') == $type)
+                                <option value="{{ $type }}" {{ request('type') == $type ? 'selected' : '' }}>{{ $type }} ({{ $cnt }})</option>
+                            @endif
                         @endforeach
                     </select>
                 </div>
@@ -35,9 +38,12 @@
                 <div class="space-y-2">
                     <label class="text-xs font-bold text-on-surface uppercase tracking-wide">Tahun</label>
                     <select name="year" class="w-full border border-border-subtle rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary bg-bg-base">
-                        <option value="">Semua Tahun</option>
+                        <option value="">Semua Tahun ({{ array_sum($yearFacets) }})</option>
                         @foreach($availableYears as $year)
-                            <option value="{{ $year }}" {{ request('year') == $year ? 'selected' : '' }}>{{ $year }}</option>
+                            @php $cnt = $yearFacets[$year] ?? 0; @endphp
+                            @if($cnt > 0 || request('year') == $year)
+                                <option value="{{ $year }}" {{ request('year') == $year ? 'selected' : '' }}>{{ $year }} ({{ $cnt }})</option>
+                            @endif
                         @endforeach
                     </select>
                 </div>
@@ -46,10 +52,10 @@
                 <div class="space-y-2">
                     <label class="text-xs font-bold text-on-surface uppercase tracking-wide">Status Hukum</label>
                     <select name="status" class="w-full border border-border-subtle rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary bg-bg-base">
-                        <option value="">Semua Status</option>
-                        <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Berlaku</option>
-                        <option value="amended" {{ request('status') == 'amended' ? 'selected' : '' }}>Diubah</option>
-                        <option value="revoked" {{ request('status') == 'revoked' ? 'selected' : '' }}>Dicabut</option>
+                        <option value="">Semua Status ({{ array_sum($statusFacets) }})</option>
+                        <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Berlaku ({{ $statusFacets['active'] ?? 0 }})</option>
+                        <option value="amended" {{ request('status') == 'amended' ? 'selected' : '' }}>Diubah ({{ $statusFacets['amended'] ?? 0 }})</option>
+                        <option value="revoked" {{ request('status') == 'revoked' ? 'selected' : '' }}>Dicabut ({{ $statusFacets['revoked'] ?? 0 }})</option>
                     </select>
                 </div>
 
@@ -81,6 +87,9 @@
                 <div class="flex items-center gap-3 w-full md:w-auto justify-end">
                     <label class="text-xs font-semibold text-on-surface-variant whitespace-nowrap">Urutkan</label>
                     <select name="sort" onchange="this.form.submit()" class="border border-border-subtle rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary bg-bg-base font-semibold text-on-surface-variant">
+                        @if(request('q'))
+                            <option value="relevance" {{ request('sort', 'relevance') == 'relevance' ? 'selected' : '' }}>Kesesuaian (Relevansi)</option>
+                        @endif
                         <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Terbaru</option>
                         <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Terlama</option>
                         <option value="number" {{ request('sort') == 'number' ? 'selected' : '' }}>Nomor Regulasi</option>
@@ -98,6 +107,11 @@
                             </span>
                             <div class="flex items-center gap-3">
                                 <span class="text-xs text-on-surface-variant font-medium">No. {{ $reg->number }} Tahun {{ $reg->year }}</span>
+                                @if(request('q') && isset($reg->relevance_percentage))
+                                    <span class="bg-indigo-500/10 text-indigo-600 text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border border-indigo-500/20">
+                                        {{ $reg->relevance_percentage }}% Relevan
+                                    </span>
+                                @endif
                                 @if($reg->status === 'active')
                                     <span class="bg-status-active/10 text-status-active text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">Berlaku</span>
                                 @elseif($reg->status === 'amended')
