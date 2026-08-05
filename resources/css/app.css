@@ -1,0 +1,82 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@theme {
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Plus Jakarta Sans', sans-serif;
+
+    --color-primary: #00288e;
+    --color-primary-container: #1e40af;
+    --color-secondary: #0051d5;
+    --color-bg-base: #ffffff; /* Clear pure white tone */
+
+    --color-status-active: #14B8A6;
+    --color-status-revoked: #E11D48;
+    --color-status-amended: #F59E0B;
+
+    --color-border-subtle: #f1f5f9;
+    --color-on-surface: #0f172a;
+    --color-on-surface-variant: #475569;
+}
+
+/* Premium Visual Customizations (Lex Sovrana Theme) */
+
+.hero-overlay {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.35) 0%, rgba(15, 23, 42, 0.85) 100%);
+}
+
+.glass-panel {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.glass-card-light {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.card-glowing-primary:hover {
+    box-shadow: 0 20px 40px -10px rgba(30, 64, 175, 0.18), 0 0 0 1px rgba(30, 64, 175, 0.1);
+    transform: translateY(-4px);
+}
+
+.card-glowing-teal:hover {
+    box-shadow: 0 20px 40px -10px rgba(20, 184, 166, 0.18), 0 0 0 1px rgba(20, 184, 166, 0.1);
+    transform: translateY(-4px);
+}
+
+.interactive-transition {
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.text-gradient {
+    background: linear-gradient(135deg, #ffffff 0%, #b8c4ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.animate-float {
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Global Font Defaults matching Stitch Specs */
+html, body {
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6, .font-display {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
