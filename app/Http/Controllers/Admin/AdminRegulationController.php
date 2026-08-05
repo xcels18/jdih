@@ -36,22 +36,43 @@ class AdminRegulationController extends Controller
         $regulations = $query->orderBy('stipulation_date', 'desc')->paginate(20)->withQueryString();
         
         $availableTypes = [
-            'Undang-Undang', 'Perppu', 'PP', 'Perpres', 'Peraturan Menteri',
-            'Peraturan MA', 'Peraturan MK', 'Peraturan BI', 'Peraturan OJK',
-            'Perda Provinsi', 'Pergub', 'Perda Kabupaten', 'Perda Kota', 'Perbup', 'Perwali',
-            'Perdes', 'Peraturan Kepala Desa', 'Peraturan Bersama Kepala Desa',
-            'Keputusan', 'Instruksi', 'Surat Edaran', 'Peraturan Kebijakan',
-            'Produk Hukum DPR/DPRD', 'Produk Hukum Desa', 'Dokumen Legislasi',
-            'Dokumen Persidangan', 'Putusan', 'Perjanjian', 'Dokumen Hukum Lainnya'
+            'Undang-Undang (UU)',
+            'Peraturan Pemerintah (PP)',
+            'Peraturan Presiden (Perpres)',
+            'Peraturan Menteri (Permen)',
+            'Peraturan Mahkamah Agung (Perma)',
+            'Peraturan Mahkamah Konstitusi (Permk)',
+            'Peraturan Bank Indonesia (PBI)',
+            'Peraturan Otoritas Jasa Keuangan (POJK)',
+            'Peraturan Daerah (Perda) Provinsi',
+            'Peraturan Gubernur (Pergub)',
+            'Peraturan Daerah (Perda) Kabupaten',
+            'Peraturan Daerah (Perda) Kota',
+            'Peraturan Bupati (Perbup)',
+            'Peraturan Walikota (Perwali)',
+            'Peraturan Desa (Perdes)',
+            'Peraturan Kepala Desa (Perkades)',
+            'Peraturan Bersama Kepala Desa (Permakades)',
+            'Keputusan Bupati (Kepbup)',
+            'Instruksi Bupati (Inbup)',
+            'Surat Edaran (SE)',
+            'Peraturan Kebijakan',
+            'Produk Hukum DPR/DPRD',
+            'Produk Hukum Desa',
+            'Dokumen Legislasi',
+            'Dokumen Persidangan',
+            'Putusan',
+            'Perjanjian',
+            'Dokumen Hukum Lainnya'
         ];
 
         // Compute dashboard statistics
         $stats = [
             'total' => Regulation::count(),
-            'perda' => Regulation::whereIn('type', ['Perda Provinsi', 'Perda Kabupaten', 'Perda Kota'])->count(),
-            'perbup' => Regulation::where('type', 'Perbup')->count(),
-            'kepbup' => Regulation::where('type', 'Keputusan')->count(),
-            'others' => Regulation::whereNotIn('type', ['Perda Provinsi', 'Perda Kabupaten', 'Perda Kota', 'Perbup', 'Keputusan'])->count(),
+            'perda' => Regulation::whereIn('type', ['Peraturan Daerah (Perda) Provinsi', 'Peraturan Daerah (Perda) Kabupaten', 'Peraturan Daerah (Perda) Kota'])->count(),
+            'perbup' => Regulation::where('type', 'Peraturan Bupati (Perbup)')->count(),
+            'kepbup' => Regulation::where('type', 'Keputusan Bupati (Kepbup)')->count(),
+            'others' => Regulation::whereNotIn('type', ['Peraturan Daerah (Perda) Provinsi', 'Peraturan Daerah (Perda) Kabupaten', 'Peraturan Daerah (Perda) Kota', 'Peraturan Bupati (Perbup)', 'Keputusan Bupati (Kepbup)'])->count(),
         ];
 
         return view('admin.index', compact('regulations', 'availableTypes', 'stats'));

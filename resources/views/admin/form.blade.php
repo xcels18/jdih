@@ -183,42 +183,42 @@
                                 <option value="">-- Pilih Bentuk Peraturan --</option>
                                 
                                 <optgroup label="Peraturan Perundang-Undangan &raquo; Pusat">
-                                    <option value="Undang-Undang" {{ (old('type', $regulation->type ?? '') == 'Undang-Undang') ? 'selected' : '' }}>Undang-Undang</option>
-                                    <option value="Perppu" {{ (old('type', $regulation->type ?? '') == 'Perppu') ? 'selected' : '' }}>Perppu</option>
-                                    <option value="PP" {{ (old('type', $regulation->type ?? '') == 'PP') ? 'selected' : '' }}>PP (Peraturan Pemerintah)</option>
-                                    <option value="Perpres" {{ (old('type', $regulation->type ?? '') == 'Perpres') ? 'selected' : '' }}>Perpres (Peraturan Presiden)</option>
-                                    <option value="Peraturan Menteri" {{ (old('type', $regulation->type ?? '') == 'Peraturan Menteri') ? 'selected' : '' }}>Peraturan Menteri</option>
+                                    <option value="Undang-Undang (UU)" {{ (old('type', $regulation->type ?? '') == 'Undang-Undang (UU)') ? 'selected' : '' }}>Undang-Undang (UU)</option>
+                                    <option value="Peraturan Pemerintah Pengganti Undang-Undang (Perppu)" {{ (old('type', $regulation->type ?? '') == 'Peraturan Pemerintah Pengganti Undang-Undang (Perppu)') ? 'selected' : '' }}>Peraturan Pemerintah Pengganti Undang-Undang (Perppu)</option>
+                                    <option value="Peraturan Pemerintah (PP)" {{ (old('type', $regulation->type ?? '') == 'Peraturan Pemerintah (PP)') ? 'selected' : '' }}>Peraturan Pemerintah (PP)</option>
+                                    <option value="Peraturan Presiden (Perpres)" {{ (old('type', $regulation->type ?? '') == 'Peraturan Presiden (Perpres)') ? 'selected' : '' }}>Peraturan Presiden (Perpres)</option>
+                                    <option value="Peraturan Menteri (Permen)" {{ (old('type', $regulation->type ?? '') == 'Peraturan Menteri (Permen)') ? 'selected' : '' }}>Peraturan Menteri (Permen)</option>
                                 </optgroup>
 
                                 <optgroup label="Peraturan Perundang-Undangan &raquo; Lembaga Negara">
-                                    <option value="Peraturan MA" {{ (old('type', $regulation->type ?? '') == 'Peraturan MA') ? 'selected' : '' }}>Peraturan MA</option>
-                                    <option value="Peraturan MK" {{ (old('type', $regulation->type ?? '') == 'Peraturan MK') ? 'selected' : '' }}>Peraturan MK</option>
-                                    <option value="Peraturan BI" {{ (old('type', $regulation->type ?? '') == 'Peraturan BI') ? 'selected' : '' }}>Peraturan BI</option>
-                                    <option value="Peraturan OJK" {{ (old('type', $regulation->type ?? '') == 'Peraturan OJK') ? 'selected' : '' }}>Peraturan OJK</option>
+                                    <option value="Peraturan Mahkamah Agung (Perma)" {{ (old('type', $regulation->type ?? '') == 'Peraturan Mahkamah Agung (Perma)') ? 'selected' : '' }}>Peraturan Mahkamah Agung (Perma)</option>
+                                    <option value="Peraturan Mahkamah Konstitusi (Permk)" {{ (old('type', $regulation->type ?? '') == 'Peraturan Mahkamah Konstitusi (Permk)') ? 'selected' : '' }}>Peraturan Mahkamah Konstitusi (Permk)</option>
+                                    <option value="Peraturan Bank Indonesia (PBI)" {{ (old('type', $regulation->type ?? '') == 'Peraturan Bank Indonesia (PBI)') ? 'selected' : '' }}>Peraturan Bank Indonesia (PBI)</option>
+                                    <option value="Peraturan Otoritas Jasa Keuangan (POJK)" {{ (old('type', $regulation->type ?? '') == 'Peraturan Otoritas Jasa Keuangan (POJK)') ? 'selected' : '' }}>Peraturan Otoritas Jasa Keuangan (POJK)</option>
                                 </optgroup>
 
                                 <optgroup label="Peraturan Perundang-Undangan &raquo; Daerah &raquo; Provinsi">
-                                    <option value="Perda Provinsi" {{ (old('type', $regulation->type ?? '') == 'Perda Provinsi') ? 'selected' : '' }}>Perda Provinsi</option>
-                                    <option value="Pergub" {{ (old('type', $regulation->type ?? '') == 'Pergub') ? 'selected' : '' }}>Pergub (Peraturan Gubernur)</option>
+                                    <option value="Peraturan Daerah (Perda) Provinsi" {{ (old('type', $regulation->type ?? '') == 'Peraturan Daerah (Perda) Provinsi') ? 'selected' : '' }}>Peraturan Daerah (Perda) Provinsi</option>
+                                    <option value="Peraturan Gubernur (Pergub)" {{ (old('type', $regulation->type ?? '') == 'Peraturan Gubernur (Pergub)') ? 'selected' : '' }}>Peraturan Gubernur (Pergub)</option>
                                 </optgroup>
 
                                 <optgroup label="Peraturan Perundang-Undangan &raquo; Daerah &raquo; Kabupaten/Kota">
-                                    <option value="Perda Kabupaten" {{ (old('type', $regulation->type ?? '') == 'Perda Kabupaten') ? 'selected' : '' }}>Perda Kabupaten</option>
-                                    <option value="Perda Kota" {{ (old('type', $regulation->type ?? '') == 'Perda Kota') ? 'selected' : '' }}>Perda Kota</option>
-                                    <option value="Perbup" {{ (old('type', $regulation->type ?? '') == 'Perbup') ? 'selected' : '' }}>Perbup (Peraturan Bupati)</option>
-                                    <option value="Perwali" {{ (old('type', $regulation->type ?? '') == 'Perwali') ? 'selected' : '' }}>Perwali (Peraturan Walikota)</option>
+                                    <option value="Peraturan Daerah (Perda) Kabupaten" {{ (old('type', $regulation->type ?? '') == 'Peraturan Daerah (Perda) Kabupaten') ? 'selected' : '' }}>Peraturan Daerah (Perda) Kabupaten</option>
+                                    <option value="Peraturan Daerah (Perda) Kota" {{ (old('type', $regulation->type ?? '') == 'Peraturan Daerah (Perda) Kota') ? 'selected' : '' }}>Peraturan Daerah (Perda) Kota</option>
+                                    <option value="Peraturan Bupati (Perbup)" {{ (old('type', $regulation->type ?? '') == 'Peraturan Bupati (Perbup)') ? 'selected' : '' }}>Peraturan Bupati (Perbup)</option>
+                                    <option value="Peraturan Walikota (Perwali)" {{ (old('type', $regulation->type ?? '') == 'Peraturan Walikota (Perwali)') ? 'selected' : '' }}>Peraturan Walikota (Perwali)</option>
                                 </optgroup>
 
                                 <optgroup label="Peraturan Perundang-Undangan &raquo; Daerah &raquo; Desa">
-                                    <option value="Perdes" {{ (old('type', $regulation->type ?? '') == 'Perdes') ? 'selected' : '' }}>Perdes (Peraturan Desa)</option>
-                                    <option value="Peraturan Kepala Desa" {{ (old('type', $regulation->type ?? '') == 'Peraturan Kepala Desa') ? 'selected' : '' }}>Peraturan Kepala Desa</option>
-                                    <option value="Peraturan Bersama Kepala Desa" {{ (old('type', $regulation->type ?? '') == 'Peraturan Bersama Kepala Desa') ? 'selected' : '' }}>Peraturan Bersama Kepala Desa</option>
+                                    <option value="Peraturan Desa (Perdes)" {{ (old('type', $regulation->type ?? '') == 'Peraturan Desa (Perdes)') ? 'selected' : '' }}>Peraturan Desa (Perdes)</option>
+                                    <option value="Peraturan Kepala Desa (Perkades)" {{ (old('type', $regulation->type ?? '') == 'Peraturan Kepala Desa (Perkades)') ? 'selected' : '' }}>Peraturan Kepala Desa (Perkades)</option>
+                                    <option value="Peraturan Bersama Kepala Desa (Permakades)" {{ (old('type', $regulation->type ?? '') == 'Peraturan Bersama Kepala Desa (Permakades)') ? 'selected' : '' }}>Peraturan Bersama Kepala Desa (Permakades)</option>
                                 </optgroup>
 
                                 <optgroup label="Bentuk Lainnya">
-                                    <option value="Keputusan" {{ (old('type', $regulation->type ?? '') == 'Keputusan') ? 'selected' : '' }}>Keputusan</option>
-                                    <option value="Instruksi" {{ (old('type', $regulation->type ?? '') == 'Instruksi') ? 'selected' : '' }}>Instruksi</option>
-                                    <option value="Surat Edaran" {{ (old('type', $regulation->type ?? '') == 'Surat Edaran') ? 'selected' : '' }}>Surat Edaran</option>
+                                    <option value="Keputusan Bupati (Kepbup)" {{ (old('type', $regulation->type ?? '') == 'Keputusan Bupati (Kepbup)') ? 'selected' : '' }}>Keputusan Bupati (Kepbup)</option>
+                                    <option value="Instruksi Bupati (Inbup)" {{ (old('type', $regulation->type ?? '') == 'Instruksi Bupati (Inbup)') ? 'selected' : '' }}>Instruksi Bupati (Inbup)</option>
+                                    <option value="Surat Edaran (SE)" {{ (old('type', $regulation->type ?? '') == 'Surat Edaran (SE)') ? 'selected' : '' }}>Surat Edaran (SE)</option>
                                     <option value="Peraturan Kebijakan" {{ (old('type', $regulation->type ?? '') == 'Peraturan Kebijakan') ? 'selected' : '' }}>Peraturan Kebijakan</option>
                                     <option value="Produk Hukum DPR/DPRD" {{ (old('type', $regulation->type ?? '') == 'Produk Hukum DPR/DPRD') ? 'selected' : '' }}>Produk Hukum DPR/DPRD</option>
                                     <option value="Produk Hukum Desa" {{ (old('type', $regulation->type ?? '') == 'Produk Hukum Desa') ? 'selected' : '' }}>Produk Hukum Desa</option>
@@ -463,26 +463,25 @@
             } else {
                 fileInfoBox.classList.add('hidden');
             }
-        });        // AUTO-POPULATE DOCUMENT_TYPE MAP
-        const documentTypeMap = {
-            'Undang-Undang': 'Peraturan Perundang-Undangan',
-            'Perppu': 'Peraturan Perundang-Undangan',
-            'PP': 'Peraturan Perundang-Undangan',
-            'Perpres': 'Peraturan Perundang-Undangan',
-            'Peraturan Menteri': 'Peraturan Perundang-Undangan',
-            'Peraturan MA': 'Peraturan Perundang-Undangan',
-            'Peraturan MK': 'Peraturan Perundang-Undangan',
-            'Peraturan BI': 'Peraturan Perundang-Undangan',
-            'Peraturan OJK': 'Peraturan Perundang-Undangan',
-            'Perda Provinsi': 'Peraturan Perundang-Undangan',
-            'Pergub': 'Peraturan Perundang-Undangan',
-            'Perda Kabupaten': 'Peraturan Perundang-Undangan',
-            'Perda Kota': 'Peraturan Perundang-Undangan',
-            'Perbup': 'Peraturan Perundang-Undangan',
-            'Perwali': 'Peraturan Perundang-Undangan',
-            'Perdes': 'Peraturan Perundang-Undangan',
-            'Peraturan Kepala Desa': 'Peraturan Perundang-Undangan',
-            'Peraturan Bersama Kepala Desa': 'Peraturan Perundang-Undangan'
+        });        const documentTypeMap = {
+            'Undang-Undang (UU)': 'Peraturan Perundang-Undangan',
+            'Peraturan Pemerintah Pengganti Undang-Undang (Perppu)': 'Peraturan Perundang-Undangan',
+            'Peraturan Pemerintah (PP)': 'Peraturan Perundang-Undangan',
+            'Peraturan Presiden (Perpres)': 'Peraturan Perundang-Undangan',
+            'Peraturan Menteri (Permen)': 'Peraturan Perundang-Undangan',
+            'Peraturan Mahkamah Agung (Perma)': 'Peraturan Perundang-Undangan',
+            'Peraturan Mahkamah Konstitusi (Permk)': 'Peraturan Perundang-Undangan',
+            'Peraturan Bank Indonesia (PBI)': 'Peraturan Perundang-Undangan',
+            'Peraturan Otoritas Jasa Keuangan (POJK)': 'Peraturan Perundang-Undangan',
+            'Peraturan Daerah (Perda) Provinsi': 'Peraturan Perundang-Undangan',
+            'Peraturan Gubernur (Pergub)': 'Peraturan Perundang-Undangan',
+            'Peraturan Daerah (Perda) Kabupaten': 'Peraturan Perundang-Undangan',
+            'Peraturan Daerah (Perda) Kota': 'Peraturan Perundang-Undangan',
+            'Peraturan Bupati (Perbup)': 'Peraturan Perundang-Undangan',
+            'Peraturan Walikota (Perwali)': 'Peraturan Perundang-Undangan',
+            'Peraturan Desa (Perdes)': 'Peraturan Perundang-Undangan',
+            'Peraturan Kepala Desa (Perkades)': 'Peraturan Perundang-Undangan',
+            'Peraturan Bersama Kepala Desa (Permakades)': 'Peraturan Perundang-Undangan'
         };
 
         const typeSelect = document.getElementById('type');

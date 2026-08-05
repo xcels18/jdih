@@ -20,17 +20,17 @@ class BulkRegulationSeeder extends Seeder
         \Illuminate\Support\Facades\DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $types = [
-            'Undang-Undang',
-            'PP',
-            'Perpres',
-            'Peraturan Menteri',
-            'Perda Provinsi',
-            'Pergub',
-            'Perda Kabupaten',
-            'Perbup',
-            'Keputusan',
-            'Instruksi',
-            'Surat Edaran',
+            'Undang-Undang (UU)',
+            'Peraturan Pemerintah (PP)',
+            'Peraturan Presiden (Perpres)',
+            'Peraturan Menteri (Permen)',
+            'Peraturan Daerah (Perda) Provinsi',
+            'Peraturan Gubernur (Pergub)',
+            'Peraturan Daerah (Perda) Kabupaten',
+            'Peraturan Bupati (Perbup)',
+            'Keputusan Bupati (Kepbup)',
+            'Instruksi Bupati (Inbup)',
+            'Surat Edaran (SE)',
             'Peraturan Kebijakan'
         ];
 

@@ -67,44 +67,90 @@
         <h3 class="text-2xl md:text-4xl font-extrabold font-display text-primary mt-1">Jelajahi Produk Hukum</h3>
         <div class="w-16 h-1 bg-primary mx-auto mt-4 rounded-full"></div>
     </div>
-    
-    @php
-        $typeConfig = [
-            'Peraturan Daerah' => [
-                'icon' => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0 0 12 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75Z" /></svg>',
-                'bg' => 'bg-amber-500/5 hover:bg-amber-500 text-amber-500',
-                'badge' => 'text-amber-600 bg-amber-500/10 border-amber-500/20'
+       @php
+        // Distinct icon definitions for all 29 type variations
+        $svgCourthouse = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-full h-full"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0 0 12 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75Z" /></svg>';
+        $svgBook = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-full h-full"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-16.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-16.25v16.25" /></svg>';
+        $svgBuilding = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-full h-full"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-9h.75m-.75 3h.75m-.75 3h.75m3 3h.75m-.75 3h.75m-.75 3h.75M4 21h16" /></svg>';
+        $svgHome = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-full h-full"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3l-1.5.545m0 6.205l3 1M2.25 9v12m-1.5-12h1.5m16.5-6V21M12 4.875L12 3.75m0 0L10.5 3.75m1.5 0L13.5 3.75" /></svg>';
+        $svgSeal = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-full h-full"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.746 3.746 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" /></svg>';
+        $svgMegaphone = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-full h-full"><path stroke-linecap="round" stroke-linejoin="round" d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z" /></svg>';
+        $svgBriefcase = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-full h-full"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 .621-.504 1.125-1.125 1.125H4.875c-.621 0-1.125-.504-1.125-1.125v-4.25m16.5 0a2.25 2.25 0 0 0-2.248-2.25H5.748a2.25 2.25 0 0 0-2.248 2.25m16.5 0V9.674c0-.621-.504-1.125-1.125-1.125H4.875c-.621 0-1.125.504-1.125 1.125V14.15m16.5 0h-16.5" /></svg>';
+        $svgScale = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-full h-full"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18M3 12h18M12 3l3 3m-3-3L9 6m3 15l3-3m-3 3l-3-3" /></svg>';
+        $svgStar = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-full h-full"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499c.173-.44.83-.44 1.002 0l2.12 5.127 5.56.331c.475.028.667.618.312.928l-4.22 3.69 1.34 5.433c.114.464-.383.826-.798.587l-4.782-2.757-4.783 2.757c-.415.239-.912-.123-.798-.587l1.34-5.433-4.22-3.69c-.355-.31-.163-.9-.312-.928l5.56-.331 2.12-5.127z" /></svg>';
+        $svgPen = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-full h-full"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-3.82.859a.15.15 0 01-.18-.18l.859-3.83a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" /></svg>';
+        $svgShield = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-full h-full"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751A11.977 11.977 0 0112 2.714z" /></svg>';
+        $svgKey = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-full h-full"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" /></svg>';
+        $svgUsers = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-full h-full"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" /></svg>';
+        $svgBolt = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-full h-full"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>';
+        $svgChat = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-full h-full"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v5.779z" /></svg>';
+        $svgDefault = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-full h-full"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" /></svg>';
+
+        // Map each individual leaf type to a distinct SVG icon
+        $typeIcons = [
+            'Undang-Undang (UU)' => $svgCourthouse,
+            'Peraturan Pemerintah Pengganti Undang-Undang (Perppu)' => $svgShield,
+            'Peraturan Pemerintah (PP)' => $svgBriefcase,
+            'Peraturan Presiden (Perpres)' => $svgStar,
+            'Peraturan Menteri (Permen)' => $svgPen,
+
+            'Peraturan Mahkamah Agung (Perma)' => $svgScale,
+            'Peraturan Mahkamah Konstitusi (Permk)' => $svgShield,
+            'Peraturan Bank Indonesia (PBI)' => $svgBriefcase,
+            'Peraturan Otoritas Jasa Keuangan (POJK)' => $svgStar,
+
+            'Peraturan Daerah (Perda) Provinsi' => $svgBuilding,
+            'Peraturan Gubernur (Pergub)' => $svgPen,
+            'Peraturan Daerah (Perda) Kabupaten' => $svgBuilding,
+            'Peraturan Daerah (Perda) Kota' => $svgBuilding,
+            'Peraturan Bupati (Perbup)' => $svgBook,
+            'Peraturan Walikota (Perwali)' => $svgBriefcase,
+            'Peraturan Desa (Perdes)' => $svgHome,
+            'Peraturan Kepala Desa (Perkades)' => $svgKey,
+            'Peraturan Bersama Kepala Desa (Permakades)' => $svgUsers,
+
+            'Keputusan Bupati (Kepbup)' => $svgSeal,
+            'Instruksi Bupati (Inbup)' => $svgBolt,
+            'Surat Edaran (SE)' => $svgMegaphone,
+            'Peraturan Kebijakan' => $svgSeal,
+            'Dokumen Persidangan' => $svgChat,
+            'default' => $svgDefault,
+        ];
+
+        // Curated balanced rotating color palettes
+        $colorPalettes = [
+            [ // Emerald Green
+                'bg' => 'bg-emerald-500/5 text-emerald-500 hover:bg-emerald-500',
+                'watermark' => 'bg-emerald-500/5 text-emerald-500/10',
             ],
-            'Peraturan Bupati' => [
-                'icon' => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-16.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-16.25v16.25" /></svg>',
-                'bg' => 'bg-emerald-500/5 hover:bg-emerald-500 text-emerald-500',
-                'badge' => 'text-emerald-600 bg-emerald-500/10 border-emerald-500/20'
+            [ // Amber Gold
+                'bg' => 'bg-amber-500/5 text-amber-500 hover:bg-amber-500',
+                'watermark' => 'bg-amber-500/5 text-amber-500/10',
             ],
-            'Keputusan Bupati' => [
-                'icon' => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.375M9 18h3.375m-6.75 3h12a3 3 0 0 0 3-3V6a3 3 0 0 0-3-3H5.25a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3Zm3.15-11.777L9 6.75l2.25 2.25L9 11.25l2.25 2.25L9 15.75l2.25 2.25" /></svg>',
-                'bg' => 'bg-blue-500/5 hover:bg-blue-500 text-blue-500',
-                'badge' => 'text-blue-600 bg-blue-500/10 border-blue-500/20'
+            [ // Indigo Blue
+                'bg' => 'bg-indigo-500/5 text-indigo-500 hover:bg-indigo-500',
+                'watermark' => 'bg-indigo-500/5 text-indigo-500/10',
             ],
-            'Peraturan Kepala Daerah' => [
-                'icon' => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-9h.75m-.75 3h.75m-.75 3h.75m3 3h.75m-.75 3h.75m-.75 3h.75M4 21h16" /></svg>',
-                'bg' => 'bg-indigo-500/5 hover:bg-indigo-500 text-indigo-500',
-                'badge' => 'text-indigo-600 bg-indigo-500/10 border-indigo-500/20'
+            [ // Violet Purple
+                'bg' => 'bg-violet-500/5 text-violet-500 hover:bg-violet-500',
+                'watermark' => 'bg-violet-500/5 text-violet-500/10',
             ],
-            'Instruksi Bupati' => [
-                'icon' => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.375M9 18h3.375m-6.75 3h12a3 3 0 0 0 3-3V6a3 3 0 0 0-3-3H5.25a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3Zm3.15-11.777L9 6.75l2.25 2.25L9 11.25l2.25 2.25L9 15.75l2.25 2.25" /></svg>',
-                'bg' => 'bg-rose-500/5 hover:bg-rose-500 text-rose-500',
-                'badge' => 'text-rose-600 bg-rose-500/10 border-rose-500/20'
+            [ // Sky Blue
+                'bg' => 'bg-blue-500/5 text-blue-500 hover:bg-blue-500',
+                'watermark' => 'bg-blue-500/5 text-blue-500/10',
             ],
-            'Surat Edaran' => [
-                'icon' => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z" /></svg>',
-                'bg' => 'bg-violet-500/5 hover:bg-violet-500 text-violet-500',
-                'badge' => 'text-violet-600 bg-violet-500/10 border-violet-500/20'
+            [ // Rose Red
+                'bg' => 'bg-rose-500/5 text-rose-500 hover:bg-rose-500',
+                'watermark' => 'bg-rose-500/5 text-rose-500/10',
             ],
-            'default' => [
-                'icon' => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" /></svg>',
-                'bg' => 'bg-primary/5 hover:bg-primary text-primary',
-                'badge' => 'text-primary bg-primary/10 border-primary/20'
-            ]
+            [ // Cyan Teal
+                'bg' => 'bg-cyan-500/5 text-cyan-500 hover:bg-cyan-500',
+                'watermark' => 'bg-cyan-500/5 text-cyan-500/10',
+            ],
+            [ // Pink Fuchsia
+                'bg' => 'bg-pink-500/5 text-pink-500 hover:bg-pink-500',
+                'watermark' => 'bg-pink-500/5 text-pink-500/10',
+            ],
         ];
     @endphp
 
@@ -129,21 +175,34 @@
             @foreach($availableTypes as $type)
                 @php
                     $count = \App\Models\Regulation::where('type', $type)->count();
-                    $cfg = $typeConfig[$type] ?? $typeConfig['default'];
+                    $paletteIndex = $loop->index % count($colorPalettes);
+                    $cfg = $colorPalettes[$paletteIndex];
+                    $icon = $typeIcons[$type] ?? $typeIcons['default'];
+                    
+                    // Local regional products vs national references
+                    $isLocal = in_array($type, [
+                        'Perda Kabupaten', 'Perbup', 'Keputusan', 'Surat Edaran',
+                        'Perda Provinsi', 'Pergub', 'Perdes', 'Peraturan Kepala Desa',
+                        'Peraturan Bersama Kepala Desa', 'Instruksi', 'Peraturan Kebijakan'
+                    ]);
                 @endphp
                 
                 <!-- Card Item -->
-                <a href="{{ route('search', ['type' => $type]) }}" class="w-full sm:w-[calc((100%-24px)/2)] md:w-[calc((100%-48px)/3)] flex-shrink-0 snap-start bg-white border border-slate-200/85 p-6 rounded-2xl shadow-sm flex items-center gap-5 relative overflow-hidden group cursor-pointer hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
-                    <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-slate-500/5 rounded-full group-hover:scale-110 transition-transform duration-500 flex items-center justify-center text-slate-500/10">
-                        {!! $cfg['icon'] !!}
+                <a href="{{ route('search', ['type' => $type]) }}" class="w-full sm:w-[calc((100%-24px)/2)] md:w-[calc((100%-48px)/3)] lg:w-[calc((100%-72px)/4)] flex-shrink-0 snap-start bg-white border border-slate-200/85 p-6 rounded-2xl shadow-sm flex items-center gap-5 relative overflow-hidden group cursor-pointer hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
+                    <div class="absolute -right-6 -bottom-6 w-24 h-24 {{ $cfg['watermark'] }} rounded-full group-hover:scale-110 transition-transform duration-500 flex items-center justify-center">
+                        <div class="w-14 h-14">
+                            {!! $icon !!}
+                        </div>
                     </div>
                     <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-350 {{ $cfg['bg'] }} group-hover:bg-primary group-hover:text-white">
-                        {!! $cfg['icon'] !!}
+                        <div class="w-6 h-6">
+                            {!! $icon !!}
+                        </div>
                     </div>
-                    <div class="relative z-10">
-                        <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 line-clamp-1" title="{{ $type }}">{{ $type }}</h4>
+                    <div class="relative z-10 flex-1 min-w-0">
+                        <h4 class="text-[11px] font-bold text-slate-500 mb-0.5 line-clamp-1" title="{{ $type }}">{{ $type }}</h4>
                         <span class="text-3xl font-black font-display text-slate-800">{{ $count }}</span>
-                        <p class="text-[10px] text-slate-500 font-medium mt-0.5">Dokumen Terbit</p>
+                        <p class="text-[10px] text-slate-500 font-medium mt-1">dokumen terbit</p>
                     </div>
                 </a>
             @endforeach

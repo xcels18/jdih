@@ -32,11 +32,11 @@ class RegulationSeeder extends Seeder
 
         // 2. Ketertiban Umum (Old)
         $tibumOld = Regulation::create([
-            'type' => 'Peraturan Daerah',
+            'type' => 'Peraturan Daerah (Perda) Kabupaten',
             'number' => '2',
             'year' => 2022,
             'title' => 'Peraturan Daerah Kabupaten Puncak Jaya Nomor 2 Tahun 2022 tentang Ketertiban Umum dan Ketentraman Masyarakat',
-            'stipulation_date' => '2022-03-15',
+            'stipulation_date' => '2022-03-12',
             'status' => 'amended',
             'description' => 'Peraturan Daerah ini mengatur mengenai pedoman ketertiban sosial, lingkungan, jalan, angkutan, serta ketentraman masyarakat di wilayah Kabupaten Puncak Jaya.',
             'file_path' => 'regulations/perda_2_2022.pdf',
@@ -47,7 +47,7 @@ class RegulationSeeder extends Seeder
 
         // 3. Ketertiban Umum (New) - Amending the old one
         $tibumNew = Regulation::create([
-            'type' => 'Peraturan Daerah',
+            'type' => 'Peraturan Daerah (Perda) Kabupaten',
             'number' => '5',
             'year' => 2024,
             'title' => 'Peraturan Daerah Kabupaten Puncak Jaya Nomor 5 Tahun 2024 tentang Perubahan atas Peraturan Daerah Nomor 2 Tahun 2022 tentang Ketertiban Umum dan Ketentraman Masyarakat',
@@ -62,19 +62,19 @@ class RegulationSeeder extends Seeder
 
         // Create relationship: new amends old, old amended by new
         RegulationRelation::create([
+            'relation_type' => 'amends',
             'regulation_id' => $tibumNew->id,
             'related_regulation_id' => $tibumOld->id,
-            'relation_type' => 'amends'
         ]);
         RegulationRelation::create([
+            'relation_type' => 'amended_by',
             'regulation_id' => $tibumOld->id,
             'related_regulation_id' => $tibumNew->id,
-            'relation_type' => 'amended_by'
         ]);
 
         // 4. RKPD 2021 (Revoked)
         $rkpdOld = Regulation::create([
-            'type' => 'Peraturan Bupati',
+            'type' => 'Peraturan Bupati (Perbup)',
             'number' => '15',
             'year' => 2021,
             'title' => 'Peraturan Bupati Puncak Jaya Nomor 15 Tahun 2021 tentang Rencana Kerja Pemerintah Daerah Tahun Anggaran 2022',
@@ -89,7 +89,7 @@ class RegulationSeeder extends Seeder
 
         // 5. Pencabutan RKPD 2021
         $rkpdNew = Regulation::create([
-            'type' => 'Peraturan Bupati',
+            'type' => 'Peraturan Bupati (Perbup)',
             'number' => '10',
             'year' => 2024,
             'title' => 'Peraturan Bupati Puncak Jaya Nomor 10 Tahun 2024 tentang Pencabutan Peraturan Bupati Nomor 15 Tahun 2021',
@@ -104,19 +104,19 @@ class RegulationSeeder extends Seeder
 
         // Create relationship: new revokes old, old revoked by new
         RegulationRelation::create([
+            'relation_type' => 'revokes',
             'regulation_id' => $rkpdNew->id,
             'related_regulation_id' => $rkpdOld->id,
-            'relation_type' => 'revokes'
         ]);
         RegulationRelation::create([
+            'relation_type' => 'revoked_by',
             'regulation_id' => $rkpdOld->id,
             'related_regulation_id' => $rkpdNew->id,
-            'relation_type' => 'revoked_by'
         ]);
 
         // 6. Pajak & Retribusi
         Regulation::create([
-            'type' => 'Peraturan Daerah',
+            'type' => 'Peraturan Daerah (Perda) Kabupaten',
             'number' => '1',
             'year' => 2025,
             'title' => 'Peraturan Daerah Kabupaten Puncak Jaya Nomor 1 Tahun 2025 tentang Pajak Daerah dan Retribusi Daerah',
@@ -131,7 +131,7 @@ class RegulationSeeder extends Seeder
 
         // 7. Keputusan Bupati tentang JDIH
         Regulation::create([
-            'type' => 'Keputusan Bupati',
+            'type' => 'Keputusan Bupati (Kepbup)',
             'number' => '45',
             'year' => 2025,
             'title' => 'Keputusan Bupati Puncak Jaya Nomor 45 Tahun 2025 tentang Pembentukan Pengelola Jaringan Dokumentasi dan Informasi Hukum (JDIH) Kabupaten Puncak Jaya',
@@ -146,7 +146,7 @@ class RegulationSeeder extends Seeder
 
         // 8. Peraturan Kepala Daerah (PERKADA)
         Regulation::create([
-            'type' => 'Peraturan Kepala Daerah',
+            'type' => 'Peraturan Bupati (Perbup)',
             'number' => '12',
             'year' => 2025,
             'title' => 'Peraturan Kepala Daerah Kabupaten Puncak Jaya Nomor 12 Tahun 2025 tentang Kebijakan Sistem Keamanan Informasi Pemerintah Daerah',
@@ -161,7 +161,7 @@ class RegulationSeeder extends Seeder
 
         // 9. Instruksi Bupati
         Regulation::create([
-            'type' => 'Instruksi Bupati',
+            'type' => 'Instruksi Bupati (Inbup)',
             'number' => '2',
             'year' => 2026,
             'title' => 'Instruksi Bupati Puncak Jaya Nomor 2 Tahun 2026 tentang Percepatan Pembangunan Infrastruktur Telekomunikasi Wilayah Pedalaman',
@@ -176,7 +176,7 @@ class RegulationSeeder extends Seeder
 
         // 10. Surat Edaran
         Regulation::create([
-            'type' => 'Surat Edaran',
+            'type' => 'Surat Edaran (SE)',
             'number' => '5',
             'year' => 2026,
             'title' => 'Surat Edaran Bupati Puncak Jaya Nomor 5 Tahun 2026 tentang Himbauan Penerapan Disiplin Kerja dan Jam Kerja ASN Selama Bulan Ramadhan',
