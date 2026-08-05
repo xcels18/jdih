@@ -24,7 +24,7 @@
         </h2>
         
         <p class="text-base md:text-xl text-white/85 leading-relaxed max-w-2xl mx-auto font-light">
-            Portal resmi JDIH untuk pencarian, pembacaan, dan pengunduhan berbagai produk hukum nasional dan daerah di Kabupaten Puncak Jaya, Papua.
+            Portal resmi JDIH untuk pencarian, pembacaan, dan pengunduhan berbagai produk hukum nasional dan daerah di Kabupaten Puncak Jaya, Papua Tengah.
         </p>
 
         <!-- Sophisticated Search Bar (Stitch Specification) -->

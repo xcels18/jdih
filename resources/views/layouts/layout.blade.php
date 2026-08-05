@@ -26,7 +26,7 @@
                 <img src="{{ asset('images/logo.png') }}" alt="Logo Puncak Jaya" class="w-10 h-10 object-contain group-hover:scale-105 transition-transform duration-300">
                 <div>
                     <h1 class="text-lg font-bold font-display leading-tight tracking-tight text-primary">PERATURAN PUNCAK JAYA</h1>
-                    <p class="text-[10px] tracking-wider text-on-surface-variant font-semibold uppercase">Kabupaten Puncak Jaya, Papua</p>
+                    <p class="text-[10px] tracking-wider text-on-surface-variant font-semibold uppercase">Kabupaten Puncak Jaya, Papua Tengah</p>
                 </div>
             </a>
 
@@ -71,17 +71,17 @@
                     </div>
                 </div>
                 <p class="text-sm text-white/70 leading-relaxed max-w-sm">
-                    Pusat dokumentasi dan penyebarluasan informasi hukum resmi Kabupaten Puncak Jaya, Provinsi Papua. Menyediakan dokumen peraturan perundang-undangan tingkat daerah terintegrasi secara cepat dan akurat.
+                    Pusat dokumentasi dan penyebarluasan informasi hukum resmi Kabupaten Puncak Jaya, Provinsi Papua Tengah. Menyediakan dokumen peraturan perundang-undangan tingkat daerah terintegrasi secara cepat dan akurat.
                 </p>
             </div>
             <div>
                 <h4 class="text-sm font-bold tracking-widest uppercase mb-6 text-white/50 font-display">Kontak Pengelola</h4>
                 <p class="text-sm text-white/70 leading-relaxed mb-3">
                     <strong>Inspektorat Kabupaten Puncak Jaya</strong><br>
-                    Kantor Bupati Puncak Jaya, Mulia, Papua
+                    Kantor Bupati Puncak Jaya, Mulia, Papua Tengah
                 </p>
                 <p class="text-sm text-white/70">
-                    Email: info@inspektorat.puncakjayakab.go.id<br>
+                    Email: inspektorat@puncakjayakab.go.id<br>
                     Website: inspektorat.puncakjayakab.go.id
                 </p>
             </div>
