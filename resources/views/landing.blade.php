@@ -20,7 +20,7 @@
         </div>
         
         <h2 class="text-4xl md:text-6xl font-black font-display tracking-tight leading-none text-gradient max-w-4xl mx-auto">
-            Temukan Peraturan dengan <span class="text-primary bg-primary-fixed/30 px-3 rounded-md">Cepat</span> dan <span class="text-status-active bg-status-active/20 px-3 rounded-md">Akurat</span>
+            Temukan Peraturan dengan <span class="text-primary bg-primary-fixed/30 px-3 rounded-md">Cepat</span> dan Akurat
         </h2>
         
         <p class="text-base md:text-xl text-white/85 leading-relaxed max-w-2xl mx-auto font-light">
