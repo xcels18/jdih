@@ -75,7 +75,7 @@ class RegulationController extends Controller
             $words = array_filter(explode(' ', $searchTerm));
 
             // Base relevance score calculation
-            $sqlSelect = "*, (
+            $sqlSelect = "(
                 (CASE WHEN title = ? THEN 50 ELSE 0 END) +
                 (CASE WHEN title LIKE ? THEN 30 ELSE 0 END) +
                 (CASE WHEN title LIKE ? THEN 15 ELSE 0 END) +
@@ -99,12 +99,13 @@ class RegulationController extends Controller
                 }
             }
 
-            $sqlSelect .= ") as raw_relevance";
+            $sqlSelect .= ")";
 
-            $query->selectRaw($sqlSelect, $bindings);
+            $subQuery = DB::table('regulations')->selectRaw("*, {$sqlSelect} as raw_relevance", $bindings);
+            $query = Regulation::fromSub($subQuery, 'regulations_sub');
 
             // Normalize raw relevance to a clean 45% - 100% percentage display
-            $query->selectRaw("LEAST(GREATEST(ROUND((raw_relevance / 80) * 100), 45), 100) as relevance_percentage");
+            $query->selectRaw("*, LEAST(GREATEST(ROUND((raw_relevance / 80) * 100), 45), 100) as relevance_percentage");
 
             $query->where(function($q) use ($searchTerm, $words) {
                 $q->where('title', 'like', "%{$searchTerm}%")
