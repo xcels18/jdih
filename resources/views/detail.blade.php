@@ -16,20 +16,7 @@
         background-color: #E2E8F0;
         border-radius: 10px;
     }
-    
-    .timeline-line::before {
-        content: '';
-        position: absolute;
-        left: 11px;
-        top: 24px;
-        bottom: -24px;
-        width: 2px;
-        background-color: #E2E8F0;
-        z-index: 0;
-    }
-    .timeline-item:last-child .timeline-line::before {
-        display: none;
-    }
+
 </style>
 
 <!-- Main Wrapper (pt-16 for navbar padding) -->
@@ -246,13 +233,13 @@
                             <h3 class="font-headline-md text-[16px] font-bold text-on-surface mb-4 border-b border-slate-100 pb-2">Riwayat Perkembangan</h3>
                             
                             @if(count($timeline) > 1)
-                                <div class="relative pl-6 border-l-2 border-slate-200 space-y-6">
+                                <div class="relative pl-5 border-l-2 border-slate-200 space-y-6">
                                     @foreach($timeline as $node)
                                         <div class="relative">
                                             @if($node['is_current'])
-                                                <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full border-[3.5px] border-primary bg-white ring-4 ring-primary/10"></div>
+                                                <div class="absolute -left-[27px] top-1 w-3.5 h-3.5 rounded-full border-[3px] border-primary bg-white ring-4 ring-primary/10 z-10"></div>
                                             @else
-                                                <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full border-2 border-slate-300 bg-white"></div>
+                                                <div class="absolute -left-[27px] top-1 w-3.5 h-3.5 rounded-full border-2 border-slate-300 bg-white z-10"></div>
                                             @endif
 
                                             <div class="space-y-1 bg-slate-50/50 p-3 rounded-xl border border-slate-100">
@@ -326,17 +313,17 @@
             <!-- Lifecycle Timeline Card -->
             <div class="bg-white rounded-2xl border border-border-subtle p-5 shadow-sm space-y-4">
                 <h3 class="font-headline-md text-sm font-bold text-on-surface">Lifecycle Peraturan</h3>
-                <div class="relative pl-3 mt-4">
+                <div class="relative pl-5 border-l-2 border-slate-200 space-y-6 mt-4 ml-3">
                     
                     <!-- Ditetapkan Timeline Node -->
-                    <div class="timeline-item relative mb-6 timeline-line">
-                        <div class="absolute -left-[27px] top-1 w-6 h-6 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center z-10">
-                            <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+                    <div class="relative">
+                        <div class="absolute -left-[27px] top-1 w-3.5 h-3.5 rounded-full border-2 border-slate-300 bg-white flex items-center justify-center z-10">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
                         </div>
-                        <div class="pl-2">
-                            <div class="text-[10px] text-slate-400 font-medium mb-0.5">{{ \Carbon\Carbon::parse($regulation->stipulation_date)->isoFormat('D MMM Y') }}</div>
+                        <div class="space-y-0.5">
+                            <div class="text-[9px] text-slate-400 font-bold mb-0.5">{{ \Carbon\Carbon::parse($regulation->stipulation_date)->isoFormat('D MMM Y') }}</div>
                             <div class="text-xs text-slate-800 font-bold">Ditetapkan</div>
-                            <div class="text-[10px] text-slate-500 mt-0.5">Dokumen hukum resmi disahkan.</div>
+                            <div class="text-[10px] text-slate-500 leading-snug">Dokumen hukum resmi disahkan.</div>
                         </div>
                     </div>
 
@@ -348,12 +335,12 @@
                     @endphp
 
                     @foreach($directRelations as $node)
-                        <div class="timeline-item relative mb-6 timeline-line">
-                            <div class="absolute -left-[27px] top-1 w-6 h-6 rounded-full border-2 border-white bg-status-amended/10 flex items-center justify-center z-10">
+                        <div class="relative">
+                            <div class="absolute -left-[27px] top-1 w-3.5 h-3.5 rounded-full border-2 border-status-amended bg-white flex items-center justify-center z-10">
                                 <span class="w-1.5 h-1.5 rounded-full bg-status-amended"></span>
                             </div>
-                            <div class="pl-2">
-                                <div class="text-[10px] text-status-amended font-medium mb-0.5">{{ \Carbon\Carbon::parse($node['date'])->isoFormat('D MMM Y') }}</div>
+                            <div class="space-y-0.5">
+                                <div class="text-[9px] text-status-amended font-bold mb-0.5">{{ \Carbon\Carbon::parse($node['date'])->isoFormat('D MMM Y') }}</div>
                                 <div class="text-xs text-slate-800 font-bold">
                                     @if($node['relation_type'] === 'amends')
                                         Mengubah
@@ -365,7 +352,7 @@
                                         Dicabut Oleh
                                     @endif
                                 </div>
-                                <a href="{{ route('detail', $node['id']) }}" class="text-[10px] text-primary hover:underline font-medium block mt-1 line-clamp-2">
+                                <a href="{{ route('detail', $node['id']) }}" class="text-[10px] text-primary hover:underline font-bold block line-clamp-2">
                                     {{ $node['title'] }}
                                 </a>
                             </div>
@@ -373,33 +360,33 @@
                     @endforeach
 
                     <!-- Current State Node -->
-                    <div class="timeline-item relative">
+                    <div class="relative">
                         @if($regulation->status === 'active')
-                            <div class="absolute -left-[27px] top-1 w-6 h-6 rounded-full border-2 border-white bg-status-active flex items-center justify-center z-10 shadow-[0_0_0_3px_rgba(20,184,166,0.15)]">
-                                <span class="w-2 h-2 rounded-full bg-white"></span>
+                            <div class="absolute -left-[27px] top-1 w-3.5 h-3.5 rounded-full border-2 border-status-active bg-white flex items-center justify-center z-10 shadow-[0_0_0_3px_rgba(20,184,166,0.1)]">
+                                <span class="w-1.5 h-1.5 rounded-full bg-status-active"></span>
                             </div>
-                            <div class="pl-2">
-                                <div class="text-[10px] text-status-active font-medium mb-0.5">Saat Ini</div>
+                            <div class="space-y-0.5">
+                                <div class="text-[9px] text-status-active font-bold mb-0.5">Saat Ini</div>
                                 <div class="text-xs text-slate-800 font-bold">Status: Aktif / Berlaku</div>
-                                <div class="text-[10px] text-slate-500 mt-0.5">Berlaku sah di Kabupaten Puncak Jaya.</div>
+                                <div class="text-[10px] text-slate-500 leading-snug">Berlaku sah di Kabupaten Puncak Jaya.</div>
                             </div>
                         @elseif($regulation->status === 'amended')
-                            <div class="absolute -left-[27px] top-1 w-6 h-6 rounded-full border-2 border-white bg-status-amended flex items-center justify-center z-10 shadow-[0_0_0_3px_rgba(245,158,11,0.15)]">
-                                <span class="w-2 h-2 rounded-full bg-white"></span>
+                            <div class="absolute -left-[27px] top-1 w-3.5 h-3.5 rounded-full border-2 border-status-amended bg-white flex items-center justify-center z-10 shadow-[0_0_0_3px_rgba(245,158,11,0.1)]">
+                                <span class="w-1.5 h-1.5 rounded-full bg-status-amended"></span>
                             </div>
-                            <div class="pl-2">
-                                <div class="text-[10px] text-status-amended font-medium mb-0.5">Saat Ini</div>
+                            <div class="space-y-0.5">
+                                <div class="text-[9px] text-status-amended font-bold mb-0.5">Saat Ini</div>
                                 <div class="text-xs text-slate-800 font-bold">Status: Diubah</div>
-                                <div class="text-[10px] text-slate-500 mt-0.5">Regulasi ini telah mengalami perubahan ketentuan.</div>
+                                <div class="text-[10px] text-slate-500 leading-snug">Regulasi ini telah mengalami perubahan ketentuan.</div>
                             </div>
                         @elseif($regulation->status === 'revoked')
-                            <div class="absolute -left-[27px] top-1 w-6 h-6 rounded-full border-2 border-white bg-status-revoked flex items-center justify-center z-10 shadow-[0_0_0_3px_rgba(225,29,72,0.15)]">
-                                <span class="w-2 h-2 rounded-full bg-white"></span>
+                            <div class="absolute -left-[27px] top-1 w-3.5 h-3.5 rounded-full border-2 border-status-revoked bg-white flex items-center justify-center z-10 shadow-[0_0_0_3px_rgba(225,29,72,0.1)]">
+                                <span class="w-1.5 h-1.5 rounded-full bg-status-revoked"></span>
                             </div>
-                            <div class="pl-2">
-                                <div class="text-[10px] text-status-revoked font-medium mb-0.5">Saat Ini</div>
-                                <div class="text-xs text-slate-800 font-bold">Status: Dicabut / Tidak Berlaku</div>
-                                <div class="text-[10px] text-slate-500 mt-0.5">Ketentuan hukum sudah tidak mengikat.</div>
+                            <div class="space-y-0.5">
+                                <div class="text-[9px] text-status-revoked font-bold mb-0.5">Saat Ini</div>
+                                <div class="text-xs text-slate-800 font-bold">Status: Dicabut</div>
+                                <div class="text-[10px] text-slate-500 leading-snug">Ketentuan hukum sudah tidak mengikat.</div>
                             </div>
                         @endif
                     </div>
