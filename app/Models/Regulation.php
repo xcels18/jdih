@@ -8,7 +8,7 @@ class Regulation extends Model
 {
     protected $fillable = [
         'type', 'number', 'year', 'title', 'stipulation_date', 'status', 'description', 'file_path', 'teu', 'law_field', 'subject',
-        'document_type', 'publishing_place', 'promulgation_date', 'gov_affairs'
+        'document_type', 'publishing_place', 'promulgation_date', 'gov_affairs', 'view_count', 'download_count'
     ];
 
     public function relations()
