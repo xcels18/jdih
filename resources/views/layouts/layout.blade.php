@@ -117,6 +117,7 @@
         </div>
     </footer>
 
+    @guest
     <!-- Floating Lapor Chatbox Widget -->
     <div class="fixed bottom-6 right-6 z-50 font-display">
         <!-- Floating Button -->
@@ -179,7 +180,9 @@
             </div>
         </div>
     </div>
+    @endguest
 
+    @guest
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const trigger = document.getElementById('lapor-trigger');
@@ -254,5 +257,6 @@
             }
         });
     </script>
+    @endguest
 </body>
 </html>

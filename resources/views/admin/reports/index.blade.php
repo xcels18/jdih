@@ -123,32 +123,31 @@
                             <td class="p-4 text-slate-650 whitespace-nowrap">
                                 {{ $rep->contact ?: '-' }}
                             </td>
-                            <td class="p-4 text-slate-700 leading-relaxed max-w-sm">
-                                <div class="whitespace-pre-line">{{ $rep->message }}</div>
+                            <td class="p-4 text-slate-600 leading-relaxed max-w-xs truncate">
+                                {{ $rep->message }}
                             </td>
                             <td class="p-4 text-on-surface-variant font-bold font-display whitespace-nowrap">
                                 {{ $rep->created_at->isoFormat('D MMM Y, HH:mm') }}
                             </td>
                             <td class="p-4 whitespace-nowrap">
                                 @if($rep->status === 'pending')
-                                    <span class="bg-amber-100 text-amber-800 text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full font-display">Baru (Pending)</span>
+                                    <span class="bg-amber-100 text-amber-800 text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full font-display font-medium">Baru</span>
                                 @elseif($rep->status === 'resolved')
                                     <span class="bg-emerald-100 text-emerald-800 text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full font-display font-black">Selesai</span>
                                 @endif
                             </td>
                             <td class="p-4 text-right whitespace-nowrap">
                                 <div class="flex items-center justify-end gap-4 font-display">
-                                    <form action="{{ route('admin.reports.update', $rep->id) }}" method="POST" class="inline">
-                                        @csrf
-                                        @method('PATCH')
-                                        @if($rep->status === 'pending')
-                                            <input type="hidden" id="status" name="status" value="resolved">
-                                            <button type="submit" class="text-[10px] font-extrabold text-emerald-600 hover:text-emerald-800 transition cursor-pointer">Tandai Selesai</button>
-                                        @else
-                                            <input type="hidden" id="status" name="status" value="pending">
-                                            <button type="submit" class="text-[10px] font-extrabold text-amber-600 hover:text-amber-800 transition cursor-pointer">Tandai Baru</button>
-                                        @endif
-                                    </form>
+                                    <button type="button" 
+                                            class="text-[10px] font-extrabold text-primary hover:text-primary-container transition cursor-pointer btn-detail-report"
+                                            data-id="{{ $rep->id }}"
+                                            data-name="{{ $rep->name ?: 'Masyarakat Umum' }}"
+                                            data-contact="{{ $rep->contact ?: '-' }}"
+                                            data-message="{{ $rep->message }}"
+                                            data-date="{{ $rep->created_at->isoFormat('D MMM Y, HH:mm') }}"
+                                            data-status="{{ $rep->status }}">
+                                        Detail Laporan
+                                    </button>
                                     <form action="{{ route('admin.reports.destroy', $rep->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus laporan ini?')" class="inline">
                                         @csrf
                                         @method('DELETE')
@@ -174,4 +173,145 @@
     </div>
 </div>
 </div>
+
+<!-- Report Detail Modal -->
+<div id="report-detail-modal" class="hidden fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+        <!-- Backdrop -->
+        <div id="modal-backdrop" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"></div>
+
+        <!-- Center helper -->
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+        <!-- Modal Box -->
+        <div class="inline-block align-middle bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-slate-200/80 font-sans">
+            <!-- Modal Header -->
+            <div class="bg-slate-50 px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+                <h3 class="text-xs font-black uppercase text-slate-800 tracking-wider font-display" id="modal-title">Detail Laporan Masuk</h3>
+                <button id="modal-close" class="text-slate-400 hover:text-slate-600 transition text-lg font-bold focus:outline-none cursor-pointer">&times;</button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6 space-y-4 text-xs">
+                <!-- Meta Grid -->
+                <div class="grid grid-cols-2 gap-4 border-b border-slate-100/80 pb-4">
+                    <div>
+                        <span class="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest block mb-0.5">Pengirim</span>
+                        <span id="modal-name" class="font-bold text-slate-800 text-sm"></span>
+                    </div>
+                    <div>
+                        <span class="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest block mb-0.5">Kontak / Email</span>
+                        <span id="modal-contact" class="font-bold text-slate-700 text-sm"></span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 border-b border-slate-100/80 pb-4">
+                    <div>
+                        <span class="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest block mb-0.5">Tanggal Kirim</span>
+                        <span id="modal-date" class="font-bold text-slate-700 font-display"></span>
+                    </div>
+                    <div>
+                        <span class="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest block mb-0.5">Status Laporan</span>
+                        <span id="modal-status" class="inline-block mt-1 font-bold uppercase tracking-wider text-[9px] font-display"></span>
+                    </div>
+                </div>
+
+                <!-- Message -->
+                <div>
+                    <span class="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest block mb-1.5">Isi Laporan / Pesan</span>
+                    <div id="modal-message" class="bg-slate-50 border border-slate-200/60 rounded-xl p-4 text-slate-800 text-xs leading-relaxed whitespace-pre-line max-h-60 overflow-y-auto custom-scrollbar"></div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="bg-slate-50 px-6 py-4 border-t border-slate-100 flex items-center justify-between">
+                <!-- Resolve Toggle Action Form inside Modal -->
+                <form id="modal-update-form" method="POST" class="inline">
+                    @csrf
+                    @method('PATCH')
+                    <input type="hidden" name="status" id="modal-update-status">
+                    <button type="submit" id="modal-update-btn" class="bg-primary hover:bg-primary-container text-white text-[10px] font-extrabold uppercase tracking-wider py-2.5 px-6 rounded-full shadow-md shadow-primary/10 transition cursor-pointer hover:scale-[1.02]"></button>
+                </form>
+
+                <div class="flex items-center gap-3">
+                    <button id="modal-cancel" class="border border-slate-200 hover:bg-slate-100 text-slate-600 text-[10px] font-extrabold uppercase tracking-wider py-2 px-5 rounded-full transition cursor-pointer">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('report-detail-modal');
+        const backdrop = document.getElementById('modal-backdrop');
+        const closeBtn = document.getElementById('modal-close');
+        const cancelBtn = document.getElementById('modal-cancel');
+        
+        const modalName = document.getElementById('modal-name');
+        const modalContact = document.getElementById('modal-contact');
+        const modalDate = document.getElementById('modal-date');
+        const modalStatus = document.getElementById('modal-status');
+        const modalMessage = document.getElementById('modal-message');
+        
+        const updateForm = document.getElementById('modal-update-form');
+        const updateStatus = document.getElementById('modal-update-status');
+        const updateBtn = document.getElementById('modal-update-btn');
+
+        function openModal(data) {
+            modalName.textContent = data.name;
+            modalContact.textContent = data.contact;
+            modalDate.textContent = data.date;
+            modalMessage.textContent = data.message;
+            
+            // Set Status badge in modal
+            if (data.status === 'pending') {
+                modalStatus.className = 'bg-amber-100 text-amber-800 text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full font-display font-medium inline-block';
+                modalStatus.textContent = 'Baru';
+                
+                // Form setup: Set to resolve
+                updateStatus.value = 'resolved';
+                updateBtn.textContent = 'Tandai Selesai';
+                updateBtn.className = 'bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-extrabold uppercase tracking-wider py-2 px-5 rounded-full shadow-md shadow-emerald-600/10 transition cursor-pointer';
+            } else {
+                modalStatus.className = 'bg-emerald-100 text-emerald-800 text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full font-display font-black inline-block';
+                modalStatus.textContent = 'Selesai';
+                
+                // Form setup: Set to pending
+                updateStatus.value = 'pending';
+                updateBtn.textContent = 'Tandai Baru';
+                updateBtn.className = 'bg-amber-600 hover:bg-amber-700 text-white text-[10px] font-extrabold uppercase tracking-wider py-2 px-5 rounded-full shadow-md shadow-amber-600/10 transition cursor-pointer';
+            }
+
+            // Set Form action url
+            updateForm.action = `/admin/reports/${data.id}`;
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+        }
+
+        // Attach listeners to all detail buttons
+        document.querySelectorAll('.btn-detail-report').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const data = {
+                    id: this.getAttribute('data-id'),
+                    name: this.getAttribute('data-name'),
+                    contact: this.getAttribute('data-contact'),
+                    message: this.getAttribute('data-message'),
+                    date: this.getAttribute('data-date'),
+                    status: this.getAttribute('data-status')
+                };
+                openModal(data);
+            });
+        });
+
+        // Close listeners
+        [closeBtn, cancelBtn, backdrop].forEach(el => {
+            if (el) el.addEventListener('click', closeModal);
+        });
+    });
+</script>
 @endsection
