@@ -30,17 +30,17 @@
         <!-- Sophisticated Search Bar (Stitch Specification) -->
         <div class="max-w-3xl mx-auto">
             <form action="{{ route('search') }}" method="GET" class="w-full">
-                <div class="w-full glass-panel rounded-2xl shadow-[0_20px_40px_-15px_rgba(30,64,175,0.25)] border border-white/60 p-2.5 flex items-center relative transition-all focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-4 focus-within:bg-white/95">
-                    <span class="text-primary ml-4 mr-3 text-3xl">
+                <div class="w-full glass-panel rounded-2xl shadow-[0_20px_40px_-15px_rgba(30,64,175,0.25)] border border-white/60 p-2.5 flex items-center relative transition-all focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-4 focus-within:bg-white/15">
+                    <span class="text-white ml-4 mr-3 text-3xl">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
                             <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.608 10.608Z" />
                         </svg>
                     </span>
-                    <input type="text" id="landing-search" name="q" class="w-full bg-transparent border-none focus:ring-0 font-body-lg text-body-lg text-on-surface placeholder:text-outline p-4 text-sm font-semibold focus:outline-none" placeholder="Cari berdasarkan judul, nomor, tahun, instansi..."/>
+                    <input type="text" id="landing-search" name="q" class="w-full bg-transparent border-none focus:ring-0 font-body-lg text-body-lg text-white placeholder:text-white/60 p-4 text-sm font-semibold focus:outline-none" placeholder="Cari berdasarkan judul, nomor, tahun, instansi..."/>
                     
-                    <div class="hidden md:flex items-center gap-1.5 text-on-surface-variant font-semibold text-xs bg-bg-base border border-border-subtle px-2.5 py-1.5 rounded-md mr-3 select-none">
+                    <div class="hidden md:flex items-center gap-1.5 text-white/60 font-semibold text-xs bg-white/5 border border-white/10 px-2.5 py-1.5 rounded-md mr-3 select-none">
                         <span>Tekan</span>
-                        <kbd class="font-mono bg-white px-1.5 rounded border border-border-subtle shadow-sm font-black text-[11px] cursor-pointer">/</kbd>
+                        <kbd class="font-mono bg-white/10 text-white px-1.5 rounded border border-white/20 shadow-sm font-black text-[11px] cursor-pointer">/</kbd>
                     </div>
                     
                     <button type="submit" class="bg-primary text-white px-8 py-4 rounded-xl font-label-md text-label-md hover:bg-primary-container transition-all shadow-md hover:shadow-lg ml-2 whitespace-nowrap text-base font-bold cursor-pointer">
