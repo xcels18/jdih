@@ -4,6 +4,8 @@ use App\Http\Controllers\RegulationController;
 use App\Http\Controllers\Admin\AdminRegulationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\Admin\AdminReportController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
@@ -14,6 +16,7 @@ Route::get('/regulation/{id}/download', [RegulationController::class, 'download'
 Route::post('/regulation/{id}/chat', [RegulationController::class, 'chat'])->name('regulation.chat');
 Route::get('/statistics', [RegulationController::class, 'statistics'])->name('stats');
 Route::get('/statistics/export', [RegulationController::class, 'exportExcel'])->name('stats.export');
+Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
 
 // Authentication Routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -30,6 +33,11 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::delete('/regulations/{id}', [AdminRegulationController::class, 'destroy'])->name('regulations.destroy');
     Route::get('/settings', [AuthController::class, 'showSettingsForm'])->name('settings');
     Route::post('/settings', [AuthController::class, 'updateSettings'])->name('settings.update');
+    
+    // Reports Management
+    Route::get('/reports', [AdminReportController::class, 'index'])->name('reports.index');
+    Route::patch('/reports/{id}', [AdminReportController::class, 'update'])->name('reports.update');
+    Route::delete('/reports/{id}', [AdminReportController::class, 'destroy'])->name('reports.destroy');
 });
 
 // API Routes (BPHN / JDIHN Harvesting standard)

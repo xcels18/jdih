@@ -56,7 +56,8 @@
             <div class="flex items-center gap-4">
                 @auth
                     <a href="{{ route('admin.regulations.index') }}" class="text-[10px] font-extrabold uppercase tracking-wider text-primary hover:text-primary-container py-2 px-5 border border-primary/20 rounded-full bg-primary/5 hover:bg-primary/10 transition">Dashboard</a>
-                    <a href="{{ route('admin.settings') }}" class="text-[10px] font-extrabold uppercase tracking-wider text-on-surface-variant hover:text-primary transition py-2 px-2">Profil</a>
+                    <a href="{{ route('admin.reports.index') }}" class="text-[10px] font-extrabold uppercase tracking-wider text-on-surface-variant hover:text-primary transition py-2.5 px-3 {{ Route::is('admin.reports.index') ? 'text-primary font-black' : '' }}">Laporan</a>
+                    <a href="{{ route('admin.settings') }}" class="text-[10px] font-extrabold uppercase tracking-wider text-on-surface-variant hover:text-primary transition py-2 px-2 {{ Route::is('admin.settings') ? 'text-primary font-black' : '' }}">Profil</a>
                     <form action="{{ route('logout') }}" method="POST" class="inline">
                         @csrf
                         <button type="submit" class="text-[10px] font-extrabold uppercase tracking-wider text-status-revoked hover:text-status-revoked/80 transition cursor-pointer">Keluar</button>
@@ -116,5 +117,142 @@
         </div>
     </footer>
 
+    <!-- Floating Lapor Chatbox Widget -->
+    <div class="fixed bottom-6 right-6 z-50 font-display">
+        <!-- Floating Button -->
+        <button id="lapor-trigger" class="flex items-center gap-2 bg-primary hover:bg-primary-container text-white px-5 py-3 rounded-full shadow-lg shadow-primary/25 transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
+            </svg>
+            <span class="text-xs font-bold uppercase tracking-wider">Lapor Pengelola</span>
+        </button>
+
+        <!-- Chatbox Form Container -->
+        <div id="lapor-chatbox" class="hidden absolute bottom-16 right-0 w-80 sm:w-96 bg-white/95 backdrop-blur border border-slate-200/85 rounded-2xl shadow-2xl p-5 space-y-4 transition-all duration-300">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+                    <span class="text-xs font-black text-slate-800 uppercase tracking-wider">Lapor Pengelola JDIH</span>
+                </div>
+                <button id="lapor-close" class="text-slate-400 hover:text-slate-600 transition text-sm font-bold focus:outline-none cursor-pointer">&times;</button>
+            </div>
+
+            <!-- Form -->
+            <form id="lapor-form" class="space-y-3">
+                @csrf
+                <p class="text-[11px] text-slate-500 leading-normal">
+                    Ada dokumen yang salah, link unduh rusak, atau saran perbaikan? Sampaikan laporan Anda ke admin JDIH.
+                </p>
+
+                <div class="space-y-1">
+                    <label class="text-[9px] font-extrabold text-slate-500 uppercase tracking-widest block">Nama (Opsional)</label>
+                    <input type="text" id="lapor-name" name="name" placeholder="Nama Anda" class="w-full border border-slate-200 focus:border-primary/30 rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-4 focus:ring-primary/5 bg-slate-50/30 focus:bg-white transition-all text-slate-800 shadow-sm">
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-[9px] font-extrabold text-slate-500 uppercase tracking-widest block">Kontak / Email (Opsional)</label>
+                    <input type="text" id="lapor-contact" name="contact" placeholder="Email / HP untuk tindak lanjut" class="w-full border border-slate-200 focus:border-primary/30 rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-4 focus:ring-primary/5 bg-slate-50/30 focus:bg-white transition-all text-slate-800 shadow-sm">
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-[9px] font-extrabold text-slate-500 uppercase tracking-widest block">Isi Laporan / Pesan</label>
+                    <textarea id="lapor-message" name="message" rows="3" required placeholder="Tuliskan detail laporan Anda..." class="w-full border border-slate-200 focus:border-primary/30 rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-4 focus:ring-primary/5 bg-slate-50/30 focus:bg-white transition-all text-slate-800 shadow-sm leading-relaxed"></textarea>
+                </div>
+
+                <button type="submit" id="lapor-submit" class="w-full bg-primary hover:bg-primary-container text-white text-xs font-bold uppercase tracking-wider py-2.5 rounded-xl shadow-md shadow-primary/10 transition-all cursor-pointer">
+                    Kirim Laporan
+                </button>
+            </form>
+
+            <!-- Success State -->
+            <div id="lapor-success" class="hidden text-center py-6 space-y-3">
+                <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                    </svg>
+                </div>
+                <div class="space-y-1">
+                    <p class="text-xs font-extrabold text-slate-800">Laporan Terkirim!</p>
+                    <p class="text-[11px] text-slate-500 px-4 leading-normal">Terima kasih. Laporan Anda berhasil disampaikan ke Admin JDIH Puncak Jaya.</p>
+                </div>
+                <button id="lapor-reset" class="text-[10px] font-bold text-primary hover:underline uppercase pt-2 cursor-pointer">Kirim Laporan Lain</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const trigger = document.getElementById('lapor-trigger');
+            const chatbox = document.getElementById('lapor-chatbox');
+            const closeBtn = document.getElementById('lapor-close');
+            const form = document.getElementById('lapor-form');
+            const successState = document.getElementById('lapor-success');
+            const submitBtn = document.getElementById('lapor-submit');
+            const resetBtn = document.getElementById('lapor-reset');
+
+            if (trigger) {
+                trigger.addEventListener('click', function() {
+                    chatbox.classList.toggle('hidden');
+                });
+            }
+
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function() {
+                    chatbox.classList.add('hidden');
+                });
+            }
+
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Mengirim...';
+
+                    const payload = {
+                        name: document.getElementById('lapor-name').value,
+                        contact: document.getElementById('lapor-contact').value,
+                        message: document.getElementById('lapor-message').value,
+                        _token: '{{ csrf_token() }}'
+                    };
+
+                    fetch('{{ route('reports.store') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            form.classList.add('hidden');
+                            successState.classList.remove('hidden');
+                        } else {
+                            alert('Gagal mengirim laporan. Silakan coba kembali.');
+                            submitBtn.disabled = false;
+                            submitBtn.textContent = 'Kirim Laporan';
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert('Terjadi kesalahan jaringan.');
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Kirim Laporan';
+                    });
+                });
+            }
+
+            if (resetBtn) {
+                resetBtn.addEventListener('click', function() {
+                    form.reset();
+                    successState.classList.add('hidden');
+                    form.classList.remove('hidden');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Kirim Laporan';
+                });
+            }
+        });
+    </script>
 </body>
 </html>
