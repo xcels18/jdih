@@ -25,6 +25,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Admin Panel Routes (authenticated)
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/regulations/export', [AdminRegulationController::class, 'exportExcel'])->name('regulations.export');
     Route::get('/regulations', [AdminRegulationController::class, 'index'])->name('regulations.index');
     Route::get('/regulations/create', [AdminRegulationController::class, 'create'])->name('regulations.create');
     Route::post('/regulations', [AdminRegulationController::class, 'store'])->name('regulations.store');

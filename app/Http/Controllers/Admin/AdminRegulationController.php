@@ -10,6 +10,48 @@ use Illuminate\Support\Facades\Storage;
 
 class AdminRegulationController extends Controller
 {
+    public function exportExcel()
+    {
+        $regulations = Regulation::orderBy('created_at', 'desc')->get();
+        
+        $fileName = 'rekap_peraturan_jdih_' . date('Y-m-d') . '.csv';
+        
+        $headers = array(
+            "Content-type"        => "text/csv; charset=UTF-8",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        );
+
+        $columns = array('ID', 'Judul Peraturan', 'Nomor', 'Tahun', 'Jenis Peraturan', 'Status', 'Tanggal Penetapan', 'Tanggal Diundangkan', 'Jumlah Unduh', 'Jumlah Dilihat');
+
+        $callback = function() use($regulations, $columns) {
+            $file = fopen('php://output', 'w');
+            // Add UTF-8 BOM for Excel compatibility
+            fputs($file, "\xEF\xBB\xBF");
+            fputcsv($file, $columns, ';');
+
+            foreach ($regulations as $reg) {
+                fputcsv($file, array(
+                    $reg->id,
+                    $reg->title,
+                    $reg->number,
+                    $reg->year,
+                    $reg->type,
+                    $reg->status,
+                    $reg->stipulation_date,
+                    $reg->promulgation_date ?: '-',
+                    $reg->download_count ?? 0,
+                    $reg->view_count ?? 0
+                ), ';');
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 
     public function index(Request $request)
     {

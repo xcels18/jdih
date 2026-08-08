@@ -11,9 +11,17 @@
             <h2 class="text-2xl md:text-3xl font-black font-display tracking-tight mb-1">Dashboard Pengelola</h2>
             <p class="text-xs text-white/70">Kelola daftar peraturan dan relasi antar dokumen hukum JDIH.</p>
         </div>
-        <a href="{{ route('admin.regulations.create') }}" class="bg-white/10 hover:bg-white/20 backdrop-blur border border-white/20 text-white text-[10px] font-extrabold uppercase tracking-wider py-3.5 px-6 rounded-full transition-all shadow-md hover:scale-[1.02]">
-            + Tambah Regulasi
-        </a>
+        <div class="flex items-center gap-3">
+            <a href="{{ route('admin.regulations.export') }}" class="bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-extrabold uppercase tracking-wider py-3.5 px-6 rounded-full transition-all shadow-md hover:scale-[1.02] flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                </svg>
+                Ekspor Excel
+            </a>
+            <a href="{{ route('admin.regulations.create') }}" class="bg-white/10 hover:bg-white/20 backdrop-blur border border-white/20 text-white text-[10px] font-extrabold uppercase tracking-wider py-3.5 px-6 rounded-full transition-all shadow-md hover:scale-[1.02]">
+                + Tambah Regulasi
+            </a>
+        </div>
     </div>
 </div>
 
