@@ -150,22 +150,19 @@
                         <button onclick="switchDetailTab('isi')" id="tab-btn-isi" class="tab-btn-item py-4 text-xs font-bold text-on-surface-variant hover:text-primary border-b-2 border-transparent transition-all">
                             Isi / Berkas PDF
                         </button>
-                        <button onclick="switchDetailTab('metadata')" id="tab-btn-metadata" class="tab-btn-item py-4 text-xs font-bold text-on-surface-variant hover:text-primary border-b-2 border-transparent transition-all">
-                            Metadata Lengkap
-                        </button>
                         <button onclick="switchDetailTab('riwayat')" id="tab-btn-riwayat" class="tab-btn-item py-4 text-xs font-bold text-on-surface-variant hover:text-primary border-b-2 border-transparent transition-all">
                             Riwayat Perubahan
                         </button>
                     </nav>
                 </div>
 
-                <!-- Tab Content Layout (Bento-style Split with AI panel) -->
+                <!-- Tab Content Layout -->
                 <div class="flex-grow flex flex-col lg:flex-row overflow-hidden">
                     
                     <!-- Main Reading Canvas -->
                     <div class="flex-grow p-6 md:p-8 overflow-y-auto custom-scrollbar">
                         
-                        <!-- TAB 1: RINGKASAN -->
+                        <!-- TAB 1: RINGKASAN & METADATA -->
                         <div id="tab-detail-ringkasan" class="tab-detail-content space-y-6">
                             <div>
                                 <h3 class="font-headline-md text-[16px] font-bold text-on-surface mb-3 border-b border-slate-100 pb-2">Abstrak / Ringkasan Eksekutif</h3>
@@ -174,28 +171,51 @@
                                 </p>
                             </div>
                             
-                            <!-- Key Facts Cards -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
-                                <div class="bg-slate-50 p-4 rounded-xl border border-border-subtle flex gap-3">
-                                    <div class="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18M3 12h18" />
-                                        </svg>
+                            <!-- Complete Metadata Grid -->
+                            <div>
+                                <h3 class="font-headline-md text-[16px] font-bold text-on-surface mb-3 border-b border-slate-100 pb-2">Identitas & Metadata Lengkap</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="border border-slate-100 p-3 rounded-lg bg-slate-50/50">
+                                        <span class="text-[9px] font-bold text-slate-400 uppercase block mb-0.5">Tipe Dokumen</span>
+                                        <span class="text-xs font-semibold text-slate-800">{{ $regulation->document_type ?: 'PERATURAN PERUNDANG-UNDANGAN' }}</span>
                                     </div>
-                                    <div>
-                                        <h4 class="text-xs font-bold text-on-surface">Bidang Hukum</h4>
-                                        <p class="text-[11px] text-on-surface-variant mt-0.5">{{ $regulation->law_field ?: 'Pemerintahan Umum' }}</p>
+                                    <div class="border border-slate-100 p-3 rounded-lg bg-slate-50/50">
+                                        <span class="text-[9px] font-bold text-slate-400 uppercase block mb-0.5">Bentuk Peraturan</span>
+                                        <span class="text-xs font-semibold text-primary">{{ $regulation->type }}</span>
                                     </div>
-                                </div>
-                                <div class="bg-slate-50 p-4 rounded-xl border border-border-subtle flex gap-3">
-                                    <div class="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6" />
-                                        </svg>
+                                    <div class="border border-slate-100 p-3 rounded-lg bg-slate-50/50">
+                                        <span class="text-[9px] font-bold text-slate-400 uppercase block mb-0.5">Nomor Peraturan</span>
+                                        <span class="text-xs font-semibold text-slate-800">{{ $regulation->number }}</span>
                                     </div>
-                                    <div>
-                                        <h4 class="text-xs font-bold text-on-surface">Urusan Pemerintahan</h4>
-                                        <p class="text-[11px] text-on-surface-variant mt-0.5">{{ $regulation->gov_affairs ?: 'Pemerintah Kabupaten Puncak Jaya' }}</p>
+                                    <div class="border border-slate-100 p-3 rounded-lg bg-slate-50/50">
+                                        <span class="text-[9px] font-bold text-slate-400 uppercase block mb-0.5">Tahun Terbit</span>
+                                        <span class="text-xs font-semibold text-slate-800">{{ $regulation->year }}</span>
+                                    </div>
+                                    <div class="border border-slate-100 p-3 rounded-lg bg-slate-50/50">
+                                        <span class="text-[9px] font-bold text-slate-400 uppercase block mb-0.5">Tanggal Ditetapkan</span>
+                                        <span class="text-xs font-semibold text-slate-800">{{ \Carbon\Carbon::parse($regulation->stipulation_date)->isoFormat('D MMMM Y') }}</span>
+                                    </div>
+                                    <div class="border border-slate-100 p-3 rounded-lg bg-slate-50/50">
+                                        <span class="text-[9px] font-bold text-slate-400 uppercase block mb-0.5">Tanggal Diundangkan</span>
+                                        <span class="text-xs font-semibold text-slate-800">
+                                            {{ $regulation->promulgation_date ? \Carbon\Carbon::parse($regulation->promulgation_date)->isoFormat('D MMMM Y') : 'Belum Diundangkan' }}
+                                        </span>
+                                    </div>
+                                    <div class="border border-slate-100 p-3 rounded-lg bg-slate-50/50">
+                                        <span class="text-[9px] font-bold text-slate-400 uppercase block mb-0.5">Tajuk Entri Utama (T.E.U.)</span>
+                                        <span class="text-xs font-semibold text-slate-800">{{ $regulation->teu ?: 'Bupati Puncak Jaya' }}</span>
+                                    </div>
+                                    <div class="border border-slate-100 p-3 rounded-lg bg-slate-50/50">
+                                        <span class="text-[9px] font-bold text-slate-400 uppercase block mb-0.5">Tempat Terbit</span>
+                                        <span class="text-xs font-semibold text-slate-800">{{ $regulation->publishing_place ?: 'KABUPATEN PUNCAK JAYA' }}</span>
+                                    </div>
+                                    <div class="border border-slate-100 p-3 rounded-lg bg-slate-50/50">
+                                        <span class="text-[9px] font-bold text-slate-400 uppercase block mb-0.5">Bidang Hukum</span>
+                                        <span class="text-xs font-semibold text-slate-800">{{ $regulation->law_field ?: 'Tidak Tersedia' }}</span>
+                                    </div>
+                                    <div class="border border-slate-100 p-3 rounded-lg bg-slate-50/50">
+                                        <span class="text-[9px] font-bold text-slate-400 uppercase block mb-0.5">Urusan Pemerintahan</span>
+                                        <span class="text-xs font-semibold text-slate-800">{{ $regulation->gov_affairs ?: 'Tidak Tersedia' }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -219,47 +239,6 @@
                                     <p class="text-[10px] text-slate-400 mt-1">Gunakan panel admin untuk melakukan unggah berkas resmi.</p>
                                 </div>
                             @endif
-                        </div>
-
-                        <!-- TAB 3: METADATA -->
-                        <div id="tab-detail-metadata" class="tab-detail-content hidden">
-                            <h3 class="font-headline-md text-[16px] font-bold text-on-surface mb-4 border-b border-slate-100 pb-2">Identitas Hukum Peraturan</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div class="border border-slate-100 p-3 rounded-lg bg-slate-50/50">
-                                    <span class="text-[9px] font-bold text-slate-400 uppercase block mb-0.5">Tipe Dokumen</span>
-                                    <span class="text-xs font-semibold text-slate-800">{{ $regulation->document_type ?: 'PERATURAN PERUNDANG-UNDANGAN' }}</span>
-                                </div>
-                                <div class="border border-slate-100 p-3 rounded-lg bg-slate-50/50">
-                                    <span class="text-[9px] font-bold text-slate-400 uppercase block mb-0.5">Bentuk Peraturan</span>
-                                    <span class="text-xs font-semibold text-primary">{{ $regulation->type }}</span>
-                                </div>
-                                <div class="border border-slate-100 p-3 rounded-lg bg-slate-50/50">
-                                    <span class="text-[9px] font-bold text-slate-400 uppercase block mb-0.5">Nomor Peraturan</span>
-                                    <span class="text-xs font-semibold text-slate-800">{{ $regulation->number }}</span>
-                                </div>
-                                <div class="border border-slate-100 p-3 rounded-lg bg-slate-50/50">
-                                    <span class="text-[9px] font-bold text-slate-400 uppercase block mb-0.5">Tahun Terbit</span>
-                                    <span class="text-xs font-semibold text-slate-800">{{ $regulation->year }}</span>
-                                </div>
-                                <div class="border border-slate-100 p-3 rounded-lg bg-slate-50/50">
-                                    <span class="text-[9px] font-bold text-slate-400 uppercase block mb-0.5">Tanggal Ditetapkan</span>
-                                    <span class="text-xs font-semibold text-slate-800">{{ \Carbon\Carbon::parse($regulation->stipulation_date)->isoFormat('D MMMM Y') }}</span>
-                                </div>
-                                <div class="border border-slate-100 p-3 rounded-lg bg-slate-50/50">
-                                    <span class="text-[9px] font-bold text-slate-400 uppercase block mb-0.5">Tanggal Diundangkan</span>
-                                    <span class="text-xs font-semibold text-slate-800">
-                                        {{ $regulation->promulgation_date ? \Carbon\Carbon::parse($regulation->promulgation_date)->isoFormat('D MMMM Y') : 'Belum Diundangkan' }}
-                                    </span>
-                                </div>
-                                <div class="border border-slate-100 p-3 rounded-lg bg-slate-50/50">
-                                    <span class="text-[9px] font-bold text-slate-400 uppercase block mb-0.5">Tajuk Entri Utama (T.E.U.)</span>
-                                    <span class="text-xs font-semibold text-slate-800">{{ $regulation->teu ?: 'Bupati Puncak Jaya' }}</span>
-                                </div>
-                                <div class="border border-slate-100 p-3 rounded-lg bg-slate-50/50">
-                                    <span class="text-[9px] font-bold text-slate-400 uppercase block mb-0.5">Tempat Terbit</span>
-                                    <span class="text-xs font-semibold text-slate-800">{{ $regulation->publishing_place ?: 'KAB. PUNCAK JAYA' }}</span>
-                                </div>
-                            </div>
                         </div>
 
                         <!-- TAB 4: RIWAYAT PERUBAHAN -->
