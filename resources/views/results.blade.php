@@ -13,15 +13,7 @@
     }
 </style>
 
-<div class="relative py-12 text-white overflow-hidden bg-cover bg-center border-b border-primary/10" style="background-image: linear-gradient(135deg, rgba(0, 40, 142, 0.95) 0%, rgba(13, 27, 68, 0.98) 100%), url('{{ asset('images/puncak_jaya_backdrop.jpg') }}');">
-    <div class="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent"></div>
-    <div class="max-w-[1280px] mx-auto px-6 relative z-10">
-        <h2 class="text-2xl md:text-3xl font-black font-display text-gradient mb-1">Cari Produk Hukum Daerah</h2>
-        <p class="text-xs text-white/70">Sistem pencarian terintegrasi dokumen hukum Kabupaten Puncak Jaya.</p>
-    </div>
-</div>
-
-<div class="min-h-screen bg-gradient-to-b from-[#f2f4ff] via-[#faf8ff] to-[#faf8ff] pb-24">
+<div class="min-h-screen bg-gradient-to-b from-[#f2f4ff] via-[#faf8ff] to-[#faf8ff] pt-8 pb-24">
     <div class="max-w-[1280px] mx-auto px-6 py-12">
         <form action="{{ route('search') }}" method="GET" class="grid grid-cols-1 lg:grid-cols-4 gap-8">
             
