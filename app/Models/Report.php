@@ -10,6 +10,7 @@ class Report extends Model
         'name',
         'contact',
         'message',
+        'reply',
         'status',
     ];
 }

@@ -147,6 +147,7 @@
                                             data-status="{{ $rep->status }}">
                                         Detail Laporan
                                         <span class="hidden raw-message">{{ $rep->message }}</span>
+                                        <span class="hidden raw-reply">{{ $rep->reply }}</span>
                                     </button>
                                     <form action="{{ route('admin.reports.destroy', $rep->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus laporan ini?')" class="inline">
                                         @csrf
@@ -217,9 +218,15 @@
                 </div>
 
                 <!-- Message -->
-                <div>
+                <div class="border-b border-slate-100/80 pb-4">
                     <span class="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest block mb-1.5">Isi Laporan / Pesan</span>
-                    <div id="modal-message" class="bg-slate-50 border border-slate-200/60 rounded-xl p-4 text-slate-800 text-xs leading-relaxed whitespace-pre-line max-h-60 overflow-y-auto custom-scrollbar"></div>
+                    <div id="modal-message" class="bg-slate-50 border border-slate-200/60 rounded-xl p-4 text-slate-800 text-xs leading-relaxed whitespace-pre-line max-h-40 overflow-y-auto custom-scrollbar"></div>
+                </div>
+
+                <!-- Admin Reply Textarea -->
+                <div class="space-y-1.5">
+                    <label for="modal-reply-input" class="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest block">Tulis Balasan Admin (Disimpan & Digabung untuk WA)</label>
+                    <textarea id="modal-reply-input" name="reply" form="modal-update-form" rows="3" placeholder="Tulis pesan penyelesaian/tanggapan resmi di sini..." class="w-full border border-slate-200 focus:border-primary/30 rounded-xl px-4 py-3 text-xs focus:outline-none focus:ring-4 focus:ring-primary/5 bg-slate-50/30 focus:bg-white transition-all duration-200 text-slate-800 shadow-sm leading-relaxed placeholder:text-slate-400/80"></textarea>
                 </div>
             </div>
 
@@ -254,6 +261,7 @@
         const closeBtn = document.getElementById('modal-close');
         const cancelBtn = document.getElementById('modal-cancel');
         const modalWaReply = document.getElementById('modal-wa-reply');
+        const modalReplyInput = document.getElementById('modal-reply-input');
         
         const modalName = document.getElementById('modal-name');
         const modalContact = document.getElementById('modal-contact');
@@ -301,7 +309,7 @@ Terima kasih atas partisipasi Anda.
 Salam hormat,
 Tim Pengelola JDIH Puncak Jaya`;
 
-                modalWaReply.href = `https://wa.me/${waNumber}?text=${encodeURIComponent(waTemplate)}`;
+                // Set up WhatsApp reply link availability
                 modalWaReply.classList.remove('hidden');
             } else {
                 modalContact.textContent = contactText;
@@ -310,6 +318,7 @@ Tim Pengelola JDIH Puncak Jaya`;
 
             modalDate.textContent = data.date;
             modalMessage.textContent = data.message;
+            modalReplyInput.value = data.reply || '';
             
             // Set Status badge in modal
             if (data.status === 'pending') {
@@ -344,16 +353,59 @@ Tim Pengelola JDIH Puncak Jaya`;
         document.querySelectorAll('.btn-detail-report').forEach(btn => {
             btn.addEventListener('click', function() {
                 const messageEl = this.querySelector('.raw-message');
+                const replyEl = this.querySelector('.raw-reply');
                 const data = {
                     id: this.getAttribute('data-id'),
                     name: this.getAttribute('data-name'),
                     contact: this.getAttribute('data-contact'),
                     message: messageEl ? messageEl.textContent.trim() : '',
+                    reply: replyEl ? replyEl.textContent.trim() : '',
                     date: this.getAttribute('data-date'),
                     status: this.getAttribute('data-status')
                 };
                 openModal(data);
             });
+        });
+
+        // WhatsApp Live Reply click handler (Pelayanan Prima)
+        modalWaReply.addEventListener('click', function(e) {
+            e.preventDefault();
+            const replyText = modalReplyInput.value.trim();
+            if (!replyText) {
+                alert('Silakan tulis isi balasan admin terlebih dahulu sebelum mengirim via WhatsApp.');
+                modalReplyInput.focus();
+                return;
+            }
+
+            const nameParam = modalName.textContent !== 'Masyarakat Umum' ? modalName.textContent : 'Bapak/Ibu';
+            const rawMsg = modalMessage.textContent;
+            const truncatedMsg = rawMsg.length > 80 ? rawMsg.substring(0, 80) + '...' : rawMsg;
+            
+            // Combined sentence template (Pelayanan Prima)
+            const waTemplate = `Yth. ${nameParam},
+
+Terima kasih telah menghubungi JDIH Kabupaten Puncak Jaya. Laporan Bapak/Ibu mengenai:
+
+"${truncatedMsg}"
+
+Telah ditindaklanjuti dengan penjelasan/tindakan sebagai berikut:
+
+${replyText}
+
+Kami berkomitmen untuk senantiasa memberikan pelayanan prima untuk dokumentasi dan informasi hukum di Kabupaten Puncak Jaya. Terima kasih atas partisipasi Anda.
+
+Salam hormat,
+Tim Pengelola JDIH Puncak Jaya`;
+
+            // Calculate WA number
+            const contactText = modalContact.textContent.trim();
+            const cleanNumber = contactText.replace(/[^0-9]/g, '');
+            let waNumber = cleanNumber;
+            if (waNumber.startsWith('0')) {
+                waNumber = '62' + waNumber.substring(1);
+            }
+            
+            window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(waTemplate)}`, '_blank');
         });
 
         // Close listeners

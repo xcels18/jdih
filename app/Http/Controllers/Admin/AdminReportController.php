@@ -43,13 +43,15 @@ class AdminReportController extends Controller
         
         $validated = $request->validate([
             'status' => 'required|in:pending,resolved',
+            'reply' => 'nullable|string',
         ]);
 
         $report->update([
             'status' => $validated['status'],
+            'reply' => $validated['reply'] ?? $report->reply,
         ]);
 
-        return redirect()->back()->with('success', 'Status laporan berhasil diperbarui.');
+        return redirect()->back()->with('success', 'Laporan berhasil diperbarui.');
     }
 
     public function destroy($id)
