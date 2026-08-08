@@ -381,10 +381,10 @@ Tim Pengelola JDIH Puncak Jaya`;
             const rawMsg = modalMessage.textContent;
             const truncatedMsg = rawMsg.length > 80 ? rawMsg.substring(0, 80) + '...' : rawMsg;
             
-            // Combined sentence template (Pelayanan Prima) with WA formatting (*bold*, _italic_) & icons
+            // Combined sentence template (Pelayanan Prima) with WA formatting (*bold*, _italic_) & universal compatibility
             const waTemplate = `*Yth. ${nameParam}*,
 
-Terima kasih telah menghubungi *JDIH Kabupaten Puncak Jaya* 🏛️. Laporan Bapak/Ibu mengenai:
+Terima kasih telah menghubungi *JDIH Kabupaten Puncak Jaya*. Laporan Bapak/Ibu mengenai:
 
 _"${truncatedMsg}"_
 
@@ -393,10 +393,10 @@ Telah *ditindaklanjuti* dengan penjelasan/tindakan sebagai berikut:
 *Balasan:*
 ${replyText}
 
-Kami berkomitmen untuk senantiasa memberikan pelayanan prima untuk dokumentasi dan informasi hukum di Kabupaten Puncak Jaya 🤝. Terima kasih atas partisipasi Anda.
+Kami berkomitmen untuk senantiasa memberikan pelayanan terbaik untuk dokumentasi dan informasi hukum di Kabupaten Puncak Jaya. Terima kasih atas partisipasi Anda.
 
 Salam hormat,
-*Tim Pengelola JDIH Puncak Jaya* 💬`;
+*Tim Pengelola JDIH Puncak Jaya*`;
 
             // Calculate WA number
             const contactText = modalContact.textContent.trim();
