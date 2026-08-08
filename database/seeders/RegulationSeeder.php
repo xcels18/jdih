@@ -188,5 +188,13 @@ class RegulationSeeder extends Seeder
             'law_field' => 'Hukum Kepegawaian',
             'subject' => 'Surat Edaran, Jam Kerja ASN, Ramadhan',
         ]);
+
+        // Seed realistic view and download counts (Pelayanan Prima)
+        foreach (Regulation::all() as $reg) {
+            $reg->update([
+                'view_count' => rand(85, 480),
+                'download_count' => rand(18, 145),
+            ]);
+        }
     }
 }
