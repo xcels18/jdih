@@ -184,7 +184,7 @@
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
         <!-- Modal Box -->
-        <div class="inline-block align-middle bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-slate-200/80 font-sans">
+        <div class="relative z-10 inline-block align-middle bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-slate-200/80 font-sans">
             <!-- Modal Header -->
             <div class="bg-slate-50 px-6 py-4 border-b border-slate-100 flex items-center justify-between">
                 <h3 class="text-xs font-black uppercase text-slate-800 tracking-wider font-display" id="modal-title">Detail Laporan Masuk</h3>
