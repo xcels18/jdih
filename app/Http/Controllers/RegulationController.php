@@ -490,4 +490,88 @@ class RegulationController extends Controller
 
         return response()->stream($callback, 200, $headers);
     }
+
+    public function chat(Request $request, $id)
+    {
+        $request->validate([
+            'message' => 'required|string|max:1000'
+        ]);
+
+        $regulation = Regulation::findOrFail($id);
+        $userMessage = $request->input('message');
+
+        // Context variable
+        $extractedText = '';
+        
+        // 1. Try to read PDF text if file exists
+        if ($regulation->file_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($regulation->file_path)) {
+            try {
+                $fullPath = \Illuminate\Support\Facades\Storage::disk('public')->path($regulation->file_path);
+                $parser = new \Smalot\PdfParser\Parser();
+                $pdf = $parser->parseFile($fullPath);
+                $extractedText = $pdf->getText();
+                // Limit size of extracted text to fit model context (e.g. first 35000 characters)
+                $extractedText = mb_substr($extractedText, 0, 35000);
+            } catch (\Exception $e) {
+                // Fail silently and fallback
+                $extractedText = '';
+            }
+        }
+
+        // 2. Check if GEMINI_API_KEY is available
+        $apiKey = env('GEMINI_API_KEY');
+
+        if ($apiKey) {
+            $context = "Dokumen Regulasi:\nJudul: " . $regulation->title . "\nJenis: " . $regulation->type . "\nAbstrak/Deskripsi: " . $regulation->description . "\n";
+            if (!empty($extractedText)) {
+                $context .= "\nIsi Dokumen (Hasil Ekstraksi PDF):\n" . $extractedText . "\n";
+            }
+
+            try {
+                $response = \Illuminate\Support\Facades\Http::timeout(15)
+                    ->post("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={$apiKey}", [
+                        'contents' => [
+                            [
+                                'parts' => [
+                                    [
+                                        'text' => "Kamu adalah AI Legal Assistant resmi untuk JDIH Kabupaten Puncak Jaya. Jawablah pertanyaan pengguna berdasarkan isi dokumen regulasi berikut secara akurat, singkat, padat, dan gunakan bahasa Indonesia yang formal. Tulis rujukan nomor pasal jika ditemukan pada teks.\n\nContext:\n{$context}\n\nPertanyaan Pengguna: {$userMessage}"
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]);
+
+                if ($response->successful()) {
+                    $result = $response->json();
+                    $botReply = $result['candidates'][0]['content']['parts'][0]['text'] ?? null;
+                    if ($botReply) {
+                        return response()->json([
+                            'reply' => $botReply,
+                            'source' => empty($extractedText) ? 'Metadata & Abstrak' : 'PDF Resmi & Metadata'
+                        ]);
+                    }
+                }
+            } catch (\Exception $e) {
+                // Fallback on request failure
+            }
+        }
+
+        // 3. Fallback mock answer if no key or API failed
+        // Make it look smart based on the metadata
+        $fallback = "Berdasarkan deskripsi resmi, regulasi ini mengatur tentang **" . ($regulation->subject ?: 'Pemerintahan') . "**. ";
+        if ($regulation->description) {
+            $fallback .= "Secara spesifik: " . \Illuminate\Support\Str::limit($regulation->description, 200);
+        } else {
+            $fallback .= "Silakan unduh salinan berkas PDF untuk meninjau secara lengkap pasal-pasal di dalamnya.";
+        }
+
+        if (!$apiKey) {
+            $fallback .= "\n\n*(Catatan Pengelola: Fitur AI membaca PDF secara penuh membutuhkan konfigurasi `GEMINI_API_KEY` di file `.env` aplikasi)*";
+        }
+
+        return response()->json([
+            'reply' => $fallback,
+            'source' => 'Metadata (Fallback)'
+        ]);
+    }
 }

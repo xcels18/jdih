@@ -491,7 +491,7 @@
         activeBtn.classList.remove('text-on-surface-variant', 'border-transparent');
     }
 
-    // AI Legal Chat simulator for high premium UX
+    // AI Legal Chat integration with backend parser and Gemini API
     function sendAiMessage() {
         const input = document.getElementById('ai-chat-input');
         const chatArea = document.getElementById('ai-chat-area');
@@ -510,33 +510,59 @@
         `;
         chatArea.insertAdjacentHTML('beforeend', userMsgHtml);
 
-        // Auto-Scroll to bottom
+        // Render Bot Thinking indicator
+        const thinkingId = 'thinking-' + Date.now();
+        const thinkingMsgHtml = `
+            <div id="${thinkingId}" class="flex flex-col gap-1 max-w-[85%] self-start animate-pulse">
+                <div class="bg-white p-3 rounded-2xl rounded-tl-sm text-slate-450 border border-slate-150 shadow-sm leading-relaxed">
+                    Sedang menganalisis dokumen...
+                </div>
+            </div>
+        `;
+        chatArea.insertAdjacentHTML('beforeend', thinkingMsgHtml);
         chatArea.parentElement.scrollTop = chatArea.parentElement.scrollHeight;
 
-        // Simulate Bot thinking and response
-        setTimeout(() => {
-            let responseText = "Terima kasih atas pertanyaannya. Berdasarkan isi dokumen resmi ini, ketentuan terkait hal tersebut diatur dalam Pasal-Pasal regulasi di Kabupaten Puncak Jaya. Silakan baca berkas PDF pada tab 'Isi / Berkas PDF' untuk melihat dokumen otentik lembaran daerah.";
-            
-            // Tailor some simple answers
-            const lowerText = userText.toLowerCase();
-            if (lowerText.includes('berlaku') || lowerText.includes('status')) {
-                responseText = "Peraturan ini saat ini memiliki status hukum **{{ $regulation->status == 'active' ? 'Berlaku / Aktif' : ($regulation->status == 'amended' ? 'Diubah' : 'Dicabut / Tidak Berlaku') }}** sejak ditetapkan pada tanggal **{{ \Carbon\Carbon::parse($regulation->stipulation_date)->isoFormat('D MMMM Y') }}**.";
-            } else if (lowerText.includes('nomor') || lowerText.includes('tahun')) {
-                responseText = "Dokumen ini adalah **{{ $regulation->type }} Nomor {{ $regulation->number }} Tahun {{ $regulation->year }}**.";
-            } else if (lowerText.includes('ringkasan') || lowerText.includes('materi')) {
-                responseText = "Ringkasan pokok peraturan: *{{ Str::limit($regulation->description, 180) }}*";
-            }
+        // Send query request to backend
+        fetch("{{ route('regulation.chat', $regulation->id) }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ message: userText })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Remove thinking indicator
+            const indicator = document.getElementById(thinkingId);
+            if (indicator) indicator.remove();
 
+            // Render Bot Response
             const botMsgHtml = `
                 <div class="flex flex-col gap-1 max-w-[85%] self-start">
                     <div class="bg-white p-3 rounded-2xl rounded-tl-sm text-slate-800 border border-slate-200 shadow-sm leading-relaxed">
-                        ${responseText}
+                        ${data.reply}
                     </div>
+                    <span class="text-[9px] text-slate-400 px-1">Sumber: ${data.source}</span>
                 </div>
             `;
             chatArea.insertAdjacentHTML('beforeend', botMsgHtml);
             chatArea.parentElement.scrollTop = chatArea.parentElement.scrollHeight;
-        }, 1200);
+        })
+        .catch(error => {
+            const indicator = document.getElementById(thinkingId);
+            if (indicator) indicator.remove();
+            
+            const errorMsgHtml = `
+                <div class="flex flex-col gap-1 max-w-[85%] self-start">
+                    <div class="bg-rose-50 text-rose-600 p-3 rounded-2xl rounded-tl-sm border border-rose-100 shadow-sm leading-relaxed">
+                        Gagal menghubungi asisten AI. Silakan coba sesaat lagi.
+                    </div>
+                </div>
+            `;
+            chatArea.insertAdjacentHTML('beforeend', errorMsgHtml);
+            chatArea.parentElement.scrollTop = chatArea.parentElement.scrollHeight;
+        });
     }
 </script>
 @endsection
