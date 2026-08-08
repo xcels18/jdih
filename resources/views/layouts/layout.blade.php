@@ -19,36 +19,51 @@
 <body class="bg-bg-base text-on-surface font-sans min-h-screen flex flex-col antialiased">
 
     <!-- Header Navigation -->
-    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-border-subtle soft-shadow">
-        <div class="max-w-[1280px] mx-auto px-6 py-4 flex items-center justify-between">
+    <header class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-border-subtle/80 shadow-[0_2px_15px_-3px_rgba(15,23,42,0.05)]">
+        <div class="max-w-[1280px] mx-auto px-6 py-4.5 flex items-center justify-between">
             <a href="{{ route('landing') }}" class="flex items-center gap-3 group">
                 <!-- Official Puncak Jaya Emblem Logo -->
                 <img src="{{ asset('images/logo.png') }}" alt="Logo Puncak Jaya" class="w-10 h-10 object-contain group-hover:scale-105 transition-transform duration-300">
                 <div>
-                    <h1 class="text-lg font-bold font-display leading-tight tracking-tight text-primary">PERATURAN PUNCAK JAYA</h1>
-                    <p class="text-[10px] tracking-wider text-on-surface-variant font-semibold uppercase">Kabupaten Puncak Jaya, Papua Tengah</p>
+                    <h1 class="text-[15px] font-black font-display leading-tight tracking-tight text-primary">PERATURAN PUNCAK JAYA</h1>
+                    <p class="text-[9px] tracking-wider text-on-surface-variant font-bold uppercase">Kabupaten Puncak Jaya, Papua Tengah</p>
                 </div>
             </a>
 
-            <!-- Navigation Links -->
-            <nav class="hidden md:flex items-center gap-8">
-                <a href="{{ route('landing') }}" class="text-sm font-semibold tracking-wide hover:text-primary transition {{ Route::is('landing') ? 'text-primary' : 'text-on-surface-variant' }}">Beranda</a>
-                <a href="{{ route('search') }}" class="text-sm font-semibold tracking-wide hover:text-primary transition {{ Route::is('search') ? 'text-primary' : 'text-on-surface-variant' }}">Cari Regulasi</a>
-                <a href="{{ route('stats') }}" class="text-sm font-semibold tracking-wide hover:text-primary transition {{ Route::is('stats') ? 'text-primary' : 'text-on-surface-variant' }}">Statistik</a>
+            <!-- Navigation Links (using premium Plus Jakarta Sans) -->
+            <nav class="hidden md:flex items-center gap-8 font-display">
+                <a href="{{ route('landing') }}" class="relative text-[11px] uppercase tracking-wider font-extrabold transition-all duration-300 {{ Route::is('landing') ? 'text-primary' : 'text-on-surface-variant hover:text-primary' }}">
+                    Beranda
+                    @if(Route::is('landing'))
+                        <span class="absolute -bottom-1.5 left-0 right-0 h-0.5 bg-primary rounded-full"></span>
+                    @endif
+                </a>
+                <a href="{{ route('search') }}" class="relative text-[11px] uppercase tracking-wider font-extrabold transition-all duration-300 {{ Route::is('search') ? 'text-primary' : 'text-on-surface-variant hover:text-primary' }}">
+                    Cari Regulasi
+                    @if(Route::is('search'))
+                        <span class="absolute -bottom-1.5 left-0 right-0 h-0.5 bg-primary rounded-full"></span>
+                    @endif
+                </a>
+                <a href="{{ route('stats') }}" class="relative text-[11px] uppercase tracking-wider font-extrabold transition-all duration-300 {{ Route::is('stats') ? 'text-primary' : 'text-on-surface-variant hover:text-primary' }}">
+                    Statistik
+                    @if(Route::is('stats'))
+                        <span class="absolute -bottom-1.5 left-0 right-0 h-0.5 bg-primary rounded-full"></span>
+                    @endif
+                </a>
             </nav>
 
             <!-- Secondary Actions -->
             <div class="flex items-center gap-4">
                 @auth
-                    <a href="{{ route('admin.regulations.index') }}" class="text-xs font-bold uppercase tracking-wider text-primary hover:text-primary-container py-2 px-4 border border-primary/20 rounded-md bg-primary/5 hover:bg-primary/10 transition">Login</a>
-                    <a href="{{ route('admin.settings') }}" class="text-xs font-bold uppercase tracking-wider text-on-surface-variant hover:text-primary transition py-2 px-2">Profil</a>
+                    <a href="{{ route('admin.regulations.index') }}" class="text-[10px] font-extrabold uppercase tracking-wider text-primary hover:text-primary-container py-2 px-5 border border-primary/20 rounded-full bg-primary/5 hover:bg-primary/10 transition">Dashboard</a>
+                    <a href="{{ route('admin.settings') }}" class="text-[10px] font-extrabold uppercase tracking-wider text-on-surface-variant hover:text-primary transition py-2 px-2">Profil</a>
                     <form action="{{ route('logout') }}" method="POST" class="inline">
                         @csrf
-                        <button type="submit" class="text-xs font-bold uppercase tracking-wider text-status-revoked hover:text-status-revoked/80 transition cursor-pointer">Keluar</button>
+                        <button type="submit" class="text-[10px] font-extrabold uppercase tracking-wider text-status-revoked hover:text-status-revoked/80 transition cursor-pointer">Keluar</button>
                     </form>
                 @else
-                    <a href="{{ route('login') }}" class="text-xs font-bold uppercase tracking-wider text-on-surface-variant hover:text-primary transition">Login Admin</a>
-                    <a href="{{ route('search') }}" class="bg-primary hover:bg-primary-container text-white text-xs font-bold uppercase tracking-widest py-2.5 px-5 rounded-md shadow-lg shadow-primary/25 transition-all duration-300">Cari Produk Hukum</a>
+                    <a href="{{ route('login') }}" class="text-[10px] font-extrabold uppercase tracking-wider text-on-surface-variant hover:text-primary transition">Login Admin</a>
+                    <a href="{{ route('search') }}" class="bg-primary hover:bg-primary-container text-white text-[10px] font-extrabold uppercase tracking-wider py-2.5 px-6 rounded-full shadow-md shadow-primary/10 hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">Cari Produk Hukum</a>
                 @endauth
             </div>
         </div>
