@@ -143,10 +143,10 @@
                                             data-id="{{ $rep->id }}"
                                             data-name="{{ $rep->name ?: 'Masyarakat Umum' }}"
                                             data-contact="{{ $rep->contact ?: '-' }}"
-                                            data-message="{{ $rep->message }}"
                                             data-date="{{ $rep->created_at->isoFormat('D MMM Y, HH:mm') }}"
                                             data-status="{{ $rep->status }}">
                                         Detail Laporan
+                                        <span class="hidden raw-message">{{ $rep->message }}</span>
                                     </button>
                                     <form action="{{ route('admin.reports.destroy', $rep->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus laporan ini?')" class="inline">
                                         @csrf
@@ -296,11 +296,12 @@
         // Attach listeners to all detail buttons
         document.querySelectorAll('.btn-detail-report').forEach(btn => {
             btn.addEventListener('click', function() {
+                const messageEl = this.querySelector('.raw-message');
                 const data = {
                     id: this.getAttribute('data-id'),
                     name: this.getAttribute('data-name'),
                     contact: this.getAttribute('data-contact'),
-                    message: this.getAttribute('data-message'),
+                    message: messageEl ? messageEl.textContent.trim() : '',
                     date: this.getAttribute('data-date'),
                     status: this.getAttribute('data-status')
                 };
