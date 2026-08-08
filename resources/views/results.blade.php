@@ -28,19 +28,23 @@
 
                 <!-- Filter: Bentuk Peraturan (Type) -->
                 <div class="flex flex-col gap-3">
-                    <h3 class="text-xs font-bold text-on-surface uppercase tracking-wider">Bentuk Peraturan</h3>
-                    <div class="flex flex-col gap-2 max-h-48 overflow-y-auto custom-scrollbar pr-1">
-                        <label class="flex items-center gap-2.5 cursor-pointer group">
-                            <input type="radio" name="type" value="" onchange="this.form.submit()" class="rounded-full border-slate-300 text-primary focus:ring-primary h-4 w-4" {{ !request('type') ? 'checked' : '' }}/>
-                            <span class="text-xs text-on-surface-variant group-hover:text-on-surface font-semibold transition-colors">Semua Bentuk</span>
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Bentuk Peraturan</h3>
+                    <div class="flex flex-col gap-1.5 max-h-56 overflow-y-auto custom-scrollbar pr-1">
+                        <label class="relative flex items-center justify-between px-3 py-2 rounded-xl border cursor-pointer transition-all duration-200 group {{ !request('type') ? 'bg-primary/5 border-primary/20 text-primary' : 'bg-slate-50/40 border-slate-100 text-on-surface-variant hover:bg-slate-50 hover:border-slate-200' }}">
+                            <input type="radio" name="type" value="" onchange="this.form.submit()" class="sr-only" {{ !request('type') ? 'checked' : '' }}/>
+                            <span class="text-xs font-bold">Semua Bentuk</span>
+                            <span class="text-[10px] font-extrabold {{ !request('type') ? 'bg-primary/10 text-primary px-2 py-0.5 rounded-md' : 'text-slate-400 group-hover:text-slate-600' }}">
+                                {{ array_sum($typeFacets) }}
+                            </span>
                         </label>
                         @foreach($availableTypes as $type)
                             @php $cnt = $typeFacets[$type] ?? 0; @endphp
                             @if($cnt > 0 || request('type') == $type)
-                                <label class="flex items-center gap-2.5 cursor-pointer group">
-                                    <input type="radio" name="type" value="{{ $type }}" onchange="this.form.submit()" class="rounded-full border-slate-300 text-primary focus:ring-primary h-4 w-4" {{ request('type') == $type ? 'checked' : '' }}/>
-                                    <span class="text-xs text-on-surface-variant group-hover:text-on-surface font-semibold transition-colors">
-                                        {{ $type }} <span class="text-slate-400 font-normal">({{ $cnt }})</span>
+                                <label class="relative flex items-center justify-between px-3 py-2 rounded-xl border cursor-pointer transition-all duration-200 group {{ request('type') == $type ? 'bg-primary/5 border-primary/20 text-primary' : 'bg-slate-50/40 border-slate-100 text-on-surface-variant hover:bg-slate-50 hover:border-slate-200' }}">
+                                    <input type="radio" name="type" value="{{ $type }}" onchange="this.form.submit()" class="sr-only" {{ request('type') == $type ? 'checked' : '' }}/>
+                                    <span class="text-xs font-bold">{{ $type }}</span>
+                                    <span class="text-[10px] font-extrabold {{ request('type') == $type ? 'bg-primary/10 text-primary px-2 py-0.5 rounded-md' : 'text-slate-400 group-hover:text-slate-600' }}">
+                                        {{ $cnt }}
                                     </span>
                                 </label>
                             @endif
@@ -52,19 +56,23 @@
 
                 <!-- Filter: Tahun -->
                 <div class="flex flex-col gap-3">
-                    <h3 class="text-xs font-bold text-on-surface uppercase tracking-wider">Tahun Terbit</h3>
-                    <div class="flex flex-col gap-2 max-h-48 overflow-y-auto custom-scrollbar pr-1">
-                        <label class="flex items-center gap-2.5 cursor-pointer group">
-                            <input type="radio" name="year" value="" onchange="this.form.submit()" class="rounded-full border-slate-300 text-primary focus:ring-primary h-4 w-4" {{ !request('year') ? 'checked' : '' }}/>
-                            <span class="text-xs text-on-surface-variant group-hover:text-on-surface font-semibold transition-colors">Semua Tahun</span>
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Tahun Terbit</h3>
+                    <div class="flex flex-col gap-1.5 max-h-56 overflow-y-auto custom-scrollbar pr-1">
+                        <label class="relative flex items-center justify-between px-3 py-2 rounded-xl border cursor-pointer transition-all duration-200 group {{ !request('year') ? 'bg-primary/5 border-primary/20 text-primary' : 'bg-slate-50/40 border-slate-100 text-on-surface-variant hover:bg-slate-50 hover:border-slate-200' }}">
+                            <input type="radio" name="year" value="" onchange="this.form.submit()" class="sr-only" {{ !request('year') ? 'checked' : '' }}/>
+                            <span class="text-xs font-bold">Semua Tahun</span>
+                            <span class="text-[10px] font-extrabold {{ !request('year') ? 'bg-primary/10 text-primary px-2 py-0.5 rounded-md' : 'text-slate-400 group-hover:text-slate-600' }}">
+                                {{ array_sum($yearFacets) }}
+                            </span>
                         </label>
                         @foreach($availableYears as $year)
                             @php $cnt = $yearFacets[$year] ?? 0; @endphp
                             @if($cnt > 0 || request('year') == $year)
-                                <label class="flex items-center gap-2.5 cursor-pointer group">
-                                    <input type="radio" name="year" value="{{ $year }}" onchange="this.form.submit()" class="rounded-full border-slate-300 text-primary focus:ring-primary h-4 w-4" {{ request('year') == $year ? 'checked' : '' }}/>
-                                    <span class="text-xs text-on-surface-variant group-hover:text-on-surface font-semibold transition-colors">
-                                        Tahun {{ $year }} <span class="text-slate-400 font-normal">({{ $cnt }})</span>
+                                <label class="relative flex items-center justify-between px-3 py-2 rounded-xl border cursor-pointer transition-all duration-200 group {{ request('year') == $year ? 'bg-primary/5 border-primary/20 text-primary' : 'bg-slate-50/40 border-slate-100 text-on-surface-variant hover:bg-slate-50 hover:border-slate-200' }}">
+                                    <input type="radio" name="year" value="{{ $year }}" onchange="this.form.submit()" class="sr-only" {{ request('year') == $year ? 'checked' : '' }}/>
+                                    <span class="text-xs font-bold">Tahun {{ $year }}</span>
+                                    <span class="text-[10px] font-extrabold {{ request('year') == $year ? 'bg-primary/10 text-primary px-2 py-0.5 rounded-md' : 'text-slate-400 group-hover:text-slate-600' }}">
+                                        {{ $cnt }}
                                     </span>
                                 </label>
                             @endif
@@ -76,28 +84,40 @@
 
                 <!-- Filter: Status Hukum -->
                 <div class="flex flex-col gap-3">
-                    <h3 class="text-xs font-bold text-on-surface uppercase tracking-wider">Status Hukum</h3>
-                    <div class="flex flex-col gap-2">
-                        <label class="flex items-center gap-2.5 cursor-pointer group">
-                            <input type="radio" name="status" value="" onchange="this.form.submit()" class="rounded-full border-slate-300 text-primary focus:ring-primary h-4 w-4" {{ !request('status') ? 'checked' : '' }}/>
-                            <span class="text-xs text-on-surface-variant group-hover:text-on-surface font-semibold transition-colors">Semua Status</span>
-                        </label>
-                        <label class="flex items-center gap-2.5 cursor-pointer group">
-                            <input type="radio" name="status" value="active" onchange="this.form.submit()" class="rounded-full border-slate-300 text-primary focus:ring-primary h-4 w-4" {{ request('status') == 'active' ? 'checked' : '' }}/>
-                            <span class="text-xs text-on-surface-variant group-hover:text-on-surface flex items-center gap-1.5 font-semibold transition-colors">
-                                <span class="w-2 h-2 rounded-full bg-status-active"></span> Berlaku <span class="text-slate-400 font-normal">({{ $statusFacets['active'] ?? 0 }})</span>
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Status Hukum</h3>
+                    <div class="flex flex-col gap-1.5">
+                        <label class="relative flex items-center justify-between px-3 py-2 rounded-xl border cursor-pointer transition-all duration-200 group {{ !request('status') ? 'bg-primary/5 border-primary/20 text-primary' : 'bg-slate-50/40 border-slate-100 text-on-surface-variant hover:bg-slate-50 hover:border-slate-200' }}">
+                            <input type="radio" name="status" value="" onchange="this.form.submit()" class="sr-only" {{ !request('status') ? 'checked' : '' }}/>
+                            <span class="text-xs font-bold">Semua Status</span>
+                            <span class="text-[10px] font-extrabold {{ !request('status') ? 'bg-primary/10 text-primary px-2 py-0.5 rounded-md' : 'text-slate-400 group-hover:text-slate-600' }}">
+                                {{ array_sum($statusFacets) }}
                             </span>
                         </label>
-                        <label class="flex items-center gap-2.5 cursor-pointer group">
-                            <input type="radio" name="status" value="amended" onchange="this.form.submit()" class="rounded-full border-slate-300 text-primary focus:ring-primary h-4 w-4" {{ request('status') == 'amended' ? 'checked' : '' }}/>
-                            <span class="text-xs text-on-surface-variant group-hover:text-on-surface flex items-center gap-1.5 font-semibold transition-colors">
-                                <span class="w-2 h-2 rounded-full bg-status-amended"></span> Diubah <span class="text-slate-400 font-normal">({{ $statusFacets['amended'] ?? 0 }})</span>
+                        <label class="relative flex items-center justify-between px-3 py-2 rounded-xl border cursor-pointer transition-all duration-200 group {{ request('status') == 'active' ? 'bg-teal-50/60 border-teal-100 text-teal-800' : 'bg-slate-50/40 border-slate-100 text-on-surface-variant hover:bg-slate-50 hover:border-slate-200' }}">
+                            <input type="radio" name="status" value="active" onchange="this.form.submit()" class="sr-only" {{ request('status') == 'active' ? 'checked' : '' }}/>
+                            <span class="text-xs font-bold flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-status-active"></span> Berlaku
+                            </span>
+                            <span class="text-[10px] font-extrabold {{ request('status') == 'active' ? 'bg-teal-100/50 text-teal-800 px-2 py-0.5 rounded-md' : 'text-slate-400 group-hover:text-slate-600' }}">
+                                {{ $statusFacets['active'] ?? 0 }}
                             </span>
                         </label>
-                        <label class="flex items-center gap-2.5 cursor-pointer group">
-                            <input type="radio" name="status" value="revoked" onchange="this.form.submit()" class="rounded-full border-slate-300 text-primary focus:ring-primary h-4 w-4" {{ request('status') == 'revoked' ? 'checked' : '' }}/>
-                            <span class="text-xs text-on-surface-variant group-hover:text-on-surface flex items-center gap-1.5 font-semibold transition-colors">
-                                <span class="w-2 h-2 rounded-full bg-status-revoked"></span> Dicabut <span class="text-slate-400 font-normal">({{ $statusFacets['revoked'] ?? 0 }})</span>
+                        <label class="relative flex items-center justify-between px-3 py-2 rounded-xl border cursor-pointer transition-all duration-200 group {{ request('status') == 'amended' ? 'bg-amber-50/60 border-amber-100 text-amber-800' : 'bg-slate-50/40 border-slate-100 text-on-surface-variant hover:bg-slate-50 hover:border-slate-200' }}">
+                            <input type="radio" name="status" value="amended" onchange="this.form.submit()" class="sr-only" {{ request('status') == 'amended' ? 'checked' : '' }}/>
+                            <span class="text-xs font-bold flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-status-amended"></span> Diubah
+                            </span>
+                            <span class="text-[10px] font-extrabold {{ request('status') == 'amended' ? 'bg-amber-100/50 text-amber-800 px-2 py-0.5 rounded-md' : 'text-slate-400 group-hover:text-slate-600' }}">
+                                {{ $statusFacets['amended'] ?? 0 }}
+                            </span>
+                        </label>
+                        <label class="relative flex items-center justify-between px-3 py-2 rounded-xl border cursor-pointer transition-all duration-200 group {{ request('status') == 'revoked' ? 'bg-rose-50/60 border-rose-100 text-rose-800' : 'bg-slate-50/40 border-slate-100 text-on-surface-variant hover:bg-slate-50 hover:border-slate-200' }}">
+                            <input type="radio" name="status" value="revoked" onchange="this.form.submit()" class="sr-only" {{ request('status') == 'revoked' ? 'checked' : '' }}/>
+                            <span class="text-xs font-bold flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-status-revoked"></span> Dicabut
+                            </span>
+                            <span class="text-[10px] font-extrabold {{ request('status') == 'revoked' ? 'bg-rose-100/50 text-rose-800 px-2 py-0.5 rounded-md' : 'text-slate-400 group-hover:text-slate-600' }}">
+                                {{ $statusFacets['revoked'] ?? 0 }}
                             </span>
                         </label>
                     </div>
