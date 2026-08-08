@@ -260,7 +260,26 @@
 
         function openModal(data) {
             modalName.textContent = data.name;
-            modalContact.textContent = data.contact;
+            
+            // Format WhatsApp Link if it looks like a phone number
+            const contactText = data.contact.trim();
+            const cleanNumber = contactText.replace(/[^0-9]/g, '');
+            
+            if (cleanNumber.length >= 9 && (contactText.startsWith('0') || contactText.startsWith('62') || contactText.startsWith('+62') || contactText.startsWith('+'))) {
+                let waNumber = cleanNumber;
+                if (waNumber.startsWith('0')) {
+                    waNumber = '62' + waNumber.substring(1);
+                }
+                modalContact.innerHTML = `<a href="https://wa.me/${waNumber}" target="_blank" class="text-primary hover:underline flex items-center gap-1 font-bold">
+                    ${contactText} (Hubungi WA)
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3 h-3 inline">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                    </svg>
+                </a>`;
+            } else {
+                modalContact.textContent = contactText;
+            }
+
             modalDate.textContent = data.date;
             modalMessage.textContent = data.message;
             

@@ -151,8 +151,8 @@
                 </div>
 
                 <div class="space-y-1">
-                    <label class="text-[9px] font-extrabold text-slate-500 uppercase tracking-widest block">Kontak / Email (Opsional)</label>
-                    <input type="text" id="lapor-contact" name="contact" placeholder="Email / HP untuk tindak lanjut" class="w-full border border-slate-200 focus:border-primary/30 rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-4 focus:ring-primary/5 bg-slate-50/30 focus:bg-white transition-all text-slate-800 shadow-sm">
+                    <label class="text-[9px] font-extrabold text-slate-500 uppercase tracking-widest block">No. WhatsApp / Kontak (Opsional)</label>
+                    <input type="text" id="lapor-contact" name="contact" placeholder="contoh: 081234567890" class="w-full border border-slate-200 focus:border-primary/30 rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-4 focus:ring-primary/5 bg-slate-50/30 focus:bg-white transition-all text-slate-800 shadow-sm">
                 </div>
 
                 <div class="space-y-1">
