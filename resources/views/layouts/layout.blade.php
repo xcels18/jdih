@@ -128,55 +128,77 @@
             <span class="text-xs font-bold uppercase tracking-wider">Lapor Pengelola</span>
         </button>
 
-        <!-- Chatbox Form Container -->
-        <div id="lapor-chatbox" class="hidden absolute bottom-16 right-0 w-80 sm:w-96 bg-white/95 backdrop-blur border border-slate-200/85 rounded-2xl shadow-2xl p-5 space-y-4 transition-all duration-300">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                <div class="flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
-                    <span class="text-xs font-black text-slate-800 uppercase tracking-wider">Lapor Pengelola JDIH</span>
+        <!-- Chatbox Form Container (WhatsApp Styled) -->
+        <div id="lapor-chatbox" class="hidden absolute bottom-16 right-0 w-80 sm:w-96 bg-[#ece5dd] border border-slate-300 rounded-2xl shadow-2xl overflow-hidden transition-all duration-300">
+            <!-- WA Header -->
+            <div class="bg-[#075e54] px-4 py-3 flex items-center justify-between text-white">
+                <div class="flex items-center gap-3">
+                    <img src="{{ asset('images/logo.png') }}" alt="JDIH Puncak Jaya" class="w-9 h-9 rounded-full bg-white p-0.5 object-contain">
+                    <div>
+                        <h4 class="text-xs font-bold font-display leading-tight">Helpdesk JDIH</h4>
+                        <div class="flex items-center gap-1.5 mt-0.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span class="text-[9px] text-white/80 font-medium">Online (Pelayanan Prima)</span>
+                        </div>
+                    </div>
                 </div>
-                <button id="lapor-close" class="text-slate-400 hover:text-slate-600 transition text-sm font-bold focus:outline-none cursor-pointer">&times;</button>
+                <button id="lapor-close" class="text-white/80 hover:text-white transition text-lg font-bold focus:outline-none cursor-pointer">&times;</button>
             </div>
 
-            <!-- Form -->
-            <form id="lapor-form" class="space-y-3">
-                @csrf
-                <p class="text-[11px] text-slate-500 leading-normal">
-                    Ada dokumen yang salah, link unduh rusak, atau saran perbaikan? Sampaikan laporan Anda ke admin JDIH.
-                </p>
-
-                <div class="space-y-1">
-                    <label class="text-[9px] font-extrabold text-slate-500 uppercase tracking-widest block">Nama (Opsional)</label>
-                    <input type="text" id="lapor-name" name="name" placeholder="Nama Anda" class="w-full border border-slate-200 focus:border-primary/30 rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-4 focus:ring-primary/5 bg-slate-50/30 focus:bg-white transition-all text-slate-800 shadow-sm">
+            <!-- WA Chat Area -->
+            <div class="p-4 space-y-4 max-h-[420px] overflow-y-auto custom-scrollbar">
+                <!-- Welcome Speech Bubble (Left Side) -->
+                <div id="lapor-welcome-bubble" class="flex items-start gap-1">
+                    <div class="bg-white text-slate-800 p-3 rounded-2xl rounded-tl-none shadow-sm max-w-[85%] text-[11px] leading-relaxed relative">
+                        Halo! Selamat datang di JDIH Puncak Jaya. Jika Anda menemukan kesalahan penulisan, link unduh rusak, atau memiliki saran perbaikan, silakan sampaikan laporan Anda di bawah ini. Tim kami akan segera menindaklanjuti. 😊
+                        <span class="text-[8px] text-slate-400 block text-right mt-1">Sekarang</span>
+                    </div>
                 </div>
 
-                <div class="space-y-1">
-                    <label class="text-[9px] font-extrabold text-slate-500 uppercase tracking-widest block">No. WhatsApp / Kontak (Opsional)</label>
-                    <input type="text" id="lapor-contact" name="contact" placeholder="contoh: 081234567890" class="w-full border border-slate-200 focus:border-primary/30 rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-4 focus:ring-primary/5 bg-slate-50/30 focus:bg-white transition-all text-slate-800 shadow-sm">
-                </div>
+                <!-- Form -->
+                <form id="lapor-form" class="space-y-3.5">
+                    @csrf
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-extrabold text-slate-500 uppercase tracking-widest block pl-1">Nama Pengirim (Opsional)</label>
+                        <input type="text" id="lapor-name" name="name" placeholder="Nama Anda" class="w-full border-0 focus:border-0 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-[#128c7e] bg-white text-slate-850 shadow-sm transition">
+                    </div>
 
-                <div class="space-y-1">
-                    <label class="text-[9px] font-extrabold text-slate-500 uppercase tracking-widest block">Isi Laporan / Pesan</label>
-                    <textarea id="lapor-message" name="message" rows="3" required placeholder="Tuliskan detail laporan Anda..." class="w-full border border-slate-200 focus:border-primary/30 rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-4 focus:ring-primary/5 bg-slate-50/30 focus:bg-white transition-all text-slate-800 shadow-sm leading-relaxed"></textarea>
-                </div>
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-extrabold text-slate-500 uppercase tracking-widest block pl-1">No. WhatsApp / Kontak (Opsional)</label>
+                        <input type="text" id="lapor-contact" name="contact" placeholder="contoh: 081234567890" class="w-full border-0 focus:border-0 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-[#128c7e] bg-white text-slate-850 shadow-sm transition">
+                    </div>
 
-                <button type="submit" id="lapor-submit" class="w-full bg-primary hover:bg-primary-container text-white text-xs font-bold uppercase tracking-wider py-2.5 rounded-xl shadow-md shadow-primary/10 transition-all cursor-pointer">
-                    Kirim Laporan
-                </button>
-            </form>
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-extrabold text-slate-500 uppercase tracking-widest block pl-1">Isi Laporan / Pesan</label>
+                        <textarea id="lapor-message" name="message" rows="3" required placeholder="Tuliskan detail laporan Anda..." class="w-full border-0 focus:border-0 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-[#128c7e] bg-white text-slate-850 shadow-sm leading-relaxed transition"></textarea>
+                    </div>
 
-            <!-- Success State -->
-            <div id="lapor-success" class="hidden text-center py-6 space-y-3">
-                <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                    </svg>
+                    <button type="submit" id="lapor-submit" class="w-full bg-[#128c7e] hover:bg-[#075e54] text-white text-xs font-bold uppercase tracking-wider py-3 rounded-xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-2 hover:scale-[1.01]">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                        </svg>
+                        Kirim Laporan
+                    </button>
+                </form>
+
+                <!-- Success State (Sent Speech Bubble on Right Side) -->
+                <div id="lapor-success" class="hidden space-y-4 py-2">
+                    <div class="flex justify-end">
+                        <div class="bg-[#d9fdd3] text-slate-800 p-3.5 rounded-2xl rounded-tr-none shadow-sm max-w-[85%] text-[11px] leading-relaxed relative border border-[#c1eec1]/30">
+                            <div class="flex items-center gap-1.5 text-emerald-700 font-bold mb-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-3.5 h-3.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                </svg>
+                                <span>Laporan Terkirim!</span>
+                            </div>
+                            Terima kasih. Pesan Anda telah masuk ke sistem pengelola JDIH Puncak Jaya dan segera kami tindaklanjuti.
+                            <span class="text-[8px] text-slate-500 block text-right mt-1.5">Terkirim &bull; <span class="text-emerald-600 font-bold">✓✓</span></span>
+                        </div>
+                    </div>
+                    <div class="text-center pt-2">
+                        <button id="lapor-reset" class="text-[10px] font-bold text-[#128c7e] hover:underline uppercase cursor-pointer">Kirim Laporan Baru</button>
+                    </div>
                 </div>
-                <div class="space-y-1">
-                    <p class="text-xs font-extrabold text-slate-800">Laporan Terkirim!</p>
-                    <p class="text-[11px] text-slate-500 px-4 leading-normal">Terima kasih. Laporan Anda berhasil disampaikan ke Admin JDIH Puncak Jaya.</p>
-                </div>
-                <button id="lapor-reset" class="text-[10px] font-bold text-primary hover:underline uppercase pt-2 cursor-pointer">Kirim Laporan Lain</button>
             </div>
         </div>
     </div>
