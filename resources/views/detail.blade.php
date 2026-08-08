@@ -312,46 +312,6 @@
 
                     </div>
 
-                    <!-- AI Legal Assistant Panel (Stitch Sidebar Integration) -->
-                    <div class="w-full lg:w-72 border-t lg:border-t-0 lg:border-l border-border-subtle bg-[#faf8ff] flex flex-col flex-shrink-0">
-                        <div class="p-4 border-b border-border-subtle flex items-center justify-between bg-white">
-                            <div class="flex items-center gap-2 text-primary">
-                                <span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
-                                <span class="font-label-md text-xs font-bold">AI Legal Assistant</span>
-                            </div>
-                            <span class="bg-primary/10 text-primary text-[8px] uppercase font-bold px-2 py-0.5 rounded">Beta</span>
-                        </div>
-                        
-                        <!-- Chat messages wrapper -->
-                        <div class="flex-1 p-4 overflow-y-auto custom-scrollbar flex flex-col gap-3 text-xs">
-                            <div class="text-center text-[10px] text-slate-400 mb-2">Ajukan pertanyaan seputar dokumen hukum ini</div>
-                            
-                            <!-- Bot Message -->
-                            <div class="flex flex-col gap-1 max-w-[85%] self-start">
-                                <div class="bg-white p-3 rounded-2xl rounded-tl-sm text-slate-800 border border-slate-200 shadow-sm leading-relaxed">
-                                    Halo! Saya asisten AI JDIH. Ada yang bisa saya bantu jelaskan mengenai <strong>{{ $regulation->type }} No. {{ $regulation->number }} Tahun {{ $regulation->year }}</strong> ini?
-                                </div>
-                            </div>
-                            
-                            <!-- User Message & Reply block container -->
-                            <div id="ai-chat-area" class="space-y-3">
-                                <!-- Dynamic messages go here -->
-                            </div>
-                        </div>
-                        
-                        <!-- Chat Input Box -->
-                        <div class="p-3 border-t border-border-subtle bg-white">
-                            <div class="relative flex items-center bg-slate-50 rounded-full px-3.5 py-1.5 border border-border-subtle focus-within:border-primary">
-                                <input id="ai-chat-input" class="bg-transparent border-none focus:ring-0 text-xs w-full p-0 text-on-surface placeholder:text-slate-400 focus:outline-none" placeholder="Tanya AI..." type="text" onkeydown="if(event.key === 'Enter') sendAiMessage()"/>
-                                <button onclick="sendAiMessage()" class="text-primary p-1 rounded-full hover:bg-slate-200 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </section>
         </div>
@@ -489,80 +449,6 @@
         var activeBtn = document.getElementById('tab-btn-' + tabId);
         activeBtn.classList.add('text-primary', 'border-primary');
         activeBtn.classList.remove('text-on-surface-variant', 'border-transparent');
-    }
-
-    // AI Legal Chat integration with backend parser and Gemini API
-    function sendAiMessage() {
-        const input = document.getElementById('ai-chat-input');
-        const chatArea = document.getElementById('ai-chat-area');
-        if (!input || !input.value.trim()) return;
-
-        const userText = input.value;
-        input.value = '';
-
-        // Render User Message
-        const userMsgHtml = `
-            <div class="flex flex-col gap-1 max-w-[85%] self-end">
-                <div class="bg-primary text-on-primary p-3 rounded-2xl rounded-tr-sm shadow-sm leading-relaxed">
-                    ${userText}
-                </div>
-            </div>
-        `;
-        chatArea.insertAdjacentHTML('beforeend', userMsgHtml);
-
-        // Render Bot Thinking indicator
-        const thinkingId = 'thinking-' + Date.now();
-        const thinkingMsgHtml = `
-            <div id="${thinkingId}" class="flex flex-col gap-1 max-w-[85%] self-start animate-pulse">
-                <div class="bg-white p-3 rounded-2xl rounded-tl-sm text-slate-450 border border-slate-150 shadow-sm leading-relaxed">
-                    Sedang menganalisis dokumen...
-                </div>
-            </div>
-        `;
-        chatArea.insertAdjacentHTML('beforeend', thinkingMsgHtml);
-        chatArea.parentElement.scrollTop = chatArea.parentElement.scrollHeight;
-
-        // Send query request to backend
-        fetch("{{ route('regulation.chat', $regulation->id) }}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ message: userText })
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Remove thinking indicator
-            const indicator = document.getElementById(thinkingId);
-            if (indicator) indicator.remove();
-
-            // Render Bot Response
-            const botMsgHtml = `
-                <div class="flex flex-col gap-1 max-w-[85%] self-start">
-                    <div class="bg-white p-3 rounded-2xl rounded-tl-sm text-slate-800 border border-slate-200 shadow-sm leading-relaxed">
-                        ${data.reply}
-                    </div>
-                    <span class="text-[9px] text-slate-400 px-1">Sumber: ${data.source}</span>
-                </div>
-            `;
-            chatArea.insertAdjacentHTML('beforeend', botMsgHtml);
-            chatArea.parentElement.scrollTop = chatArea.parentElement.scrollHeight;
-        })
-        .catch(error => {
-            const indicator = document.getElementById(thinkingId);
-            if (indicator) indicator.remove();
-            
-            const errorMsgHtml = `
-                <div class="flex flex-col gap-1 max-w-[85%] self-start">
-                    <div class="bg-rose-50 text-rose-600 p-3 rounded-2xl rounded-tl-sm border border-rose-100 shadow-sm leading-relaxed">
-                        Gagal menghubungi asisten AI. Silakan coba sesaat lagi.
-                    </div>
-                </div>
-            `;
-            chatArea.insertAdjacentHTML('beforeend', errorMsgHtml);
-            chatArea.parentElement.scrollTop = chatArea.parentElement.scrollHeight;
-        });
     }
 </script>
 @endsection
