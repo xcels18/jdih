@@ -56,13 +56,13 @@
             <div class="flex items-center gap-4">
                 @auth
                     <a href="{{ route('admin.regulations.index') }}" class="text-[10px] font-extrabold uppercase tracking-wider text-primary hover:text-primary-container py-2 px-5 border border-primary/20 rounded-full bg-primary/5 hover:bg-primary/10 transition">Dashboard</a>
-                    <a href="{{ route('admin.reports.index') }}" class="relative text-[10px] font-extrabold uppercase tracking-wider text-on-surface-variant hover:text-primary transition py-2.5 px-3 {{ Route::is('admin.reports.index') ? 'text-primary font-black' : '' }}">
+                    <a href="{{ route('admin.reports.index') }}" class="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wider text-on-surface-variant hover:text-primary transition py-2.5 px-3 {{ Route::is('admin.reports.index') ? 'text-primary font-black' : '' }}">
                         Laporan
                         @php
                             $pendingReports = \App\Models\Report::where('status', 'pending')->count();
                         @endphp
                         @if($pendingReports > 0)
-                            <span class="absolute top-0 right-1 inline-flex items-center justify-center min-w-[14px] h-[14px] text-[8px] font-bold text-white bg-red-500 rounded-full px-1 shadow-sm">
+                            <span class="inline-flex items-center justify-center min-w-[16px] h-[16px] text-[9px] font-bold text-white bg-rose-500 rounded-full px-1.5 shadow-sm">
                                 {{ $pendingReports }}
                             </span>
                         @endif

@@ -24,41 +24,7 @@ class RegulationController extends Controller
         // Get unique years for filter
         $availableYears = Regulation::select('year')->distinct()->orderBy('year', 'desc')->pluck('year');
         
-        $fixed = [
-            'Peraturan Daerah (Perda) Kabupaten',
-            'Peraturan Bupati (Perbup)',
-            'Keputusan Bupati (Kepbup)',
-            'Surat Edaran (SE)'
-        ];
-        $others = [
-            'Undang-Undang (UU)',
-            'Peraturan Pemerintah Pengganti Undang-Undang (Perppu)',
-            'Peraturan Pemerintah (PP)',
-            'Peraturan Presiden (Perpres)',
-            'Peraturan Menteri (Permen)',
-            'Peraturan Mahkamah Agung (Perma)',
-            'Peraturan Mahkamah Konstitusi (Permk)',
-            'Peraturan Bank Indonesia (PBI)',
-            'Peraturan Otoritas Jasa Keuangan (POJK)',
-            'Peraturan Daerah (Perda) Provinsi',
-            'Peraturan Gubernur (Pergub)',
-            'Peraturan Daerah (Perda) Kota',
-            'Peraturan Walikota (Perwali)',
-            'Peraturan Desa (Perdes)',
-            'Peraturan Kepala Desa (Perkades)',
-            'Peraturan Bersama Kepala Desa (Permakades)',
-            'Instruksi Bupati (Inbup)',
-            'Peraturan Kebijakan',
-            'Produk Hukum DPR/DPRD',
-            'Produk Hukum Desa',
-            'Dokumen Legislasi',
-            'Dokumen Persidangan',
-            'Putusan',
-            'Perjanjian',
-            'Dokumen Hukum Lainnya'
-        ];
-        shuffle($others);
-        $availableTypes = array_merge($fixed, $others);
+        $availableTypes = Regulation::select('type')->whereNotNull('type')->where('type', '!=', '')->distinct()->orderBy('type', 'asc')->pluck('type')->toArray();
 
         return view('landing', compact('stats', 'recentRegulations', 'availableYears', 'availableTypes'));
     }
@@ -171,37 +137,7 @@ class RegulationController extends Controller
 
         $availableYears = Regulation::select('year')->distinct()->orderBy('year', 'desc')->pluck('year');
         
-        $availableTypes = [
-            'Undang-Undang (UU)',
-            'Peraturan Pemerintah Pengganti Undang-Undang (Perppu)',
-            'Peraturan Pemerintah (PP)',
-            'Peraturan Presiden (Perpres)',
-            'Peraturan Menteri (Permen)',
-            'Peraturan Mahkamah Agung (Perma)',
-            'Peraturan Mahkamah Konstitusi (Permk)',
-            'Peraturan Bank Indonesia (PBI)',
-            'Peraturan Otoritas Jasa Keuangan (POJK)',
-            'Peraturan Daerah (Perda) Provinsi',
-            'Peraturan Gubernur (Pergub)',
-            'Peraturan Daerah (Perda) Kabupaten',
-            'Peraturan Daerah (Perda) Kota',
-            'Peraturan Bupati (Perbup)',
-            'Peraturan Walikota (Perwali)',
-            'Peraturan Desa (Perdes)',
-            'Peraturan Kepala Desa (Perkades)',
-            'Peraturan Bersama Kepala Desa (Permakades)',
-            'Keputusan Bupati (Kepbup)',
-            'Instruksi Bupati (Inbup)',
-            'Surat Edaran (SE)',
-            'Peraturan Kebijakan',
-            'Produk Hukum DPR/DPRD',
-            'Produk Hukum Desa',
-            'Dokumen Legislasi',
-            'Dokumen Persidangan',
-            'Putusan',
-            'Perjanjian',
-            'Dokumen Hukum Lainnya'
-        ];
+        $availableTypes = Regulation::select('type')->whereNotNull('type')->where('type', '!=', '')->distinct()->orderBy('type', 'asc')->pluck('type')->toArray();
 
         return view('results', compact('regulations', 'availableYears', 'availableTypes', 'typeFacets', 'yearFacets', 'statusFacets'));
     }
@@ -392,36 +328,7 @@ class RegulationController extends Controller
         // For initial load page, get unique filter lists
         $filterYears = Regulation::select('year')->distinct()->orderBy('year', 'desc')->pluck('year');
         $filterDocTypes = Regulation::select('document_type')->distinct()->whereNotNull('document_type')->pluck('document_type');
-        $filterTypes = [
-            'Undang-Undang (UU)',
-            'Peraturan Pemerintah (PP)',
-            'Peraturan Presiden (Perpres)',
-            'Peraturan Menteri (Permen)',
-            'Peraturan Mahkamah Agung (Perma)',
-            'Peraturan Mahkamah Konstitusi (Permk)',
-            'Peraturan Bank Indonesia (PBI)',
-            'Peraturan Otoritas Jasa Keuangan (POJK)',
-            'Peraturan Daerah (Perda) Provinsi',
-            'Peraturan Gubernur (Pergub)',
-            'Peraturan Daerah (Perda) Kabupaten',
-            'Peraturan Daerah (Perda) Kota',
-            'Peraturan Bupati (Perbup)',
-            'Peraturan Walikota (Perwali)',
-            'Peraturan Desa (Perdes)',
-            'Peraturan Kepala Desa (Perkades)',
-            'Peraturan Bersama Kepala Desa (Permakades)',
-            'Keputusan Bupati (Kepbup)',
-            'Instruksi Bupati (Inbup)',
-            'Surat Edaran (SE)',
-            'Peraturan Kebijakan',
-            'Produk Hukum DPR/DPRD',
-            'Produk Hukum Desa',
-            'Dokumen Legislasi',
-            'Dokumen Persidangan',
-            'Putusan',
-            'Perjanjian',
-            'Dokumen Hukum Lainnya'
-        ];
+        $filterTypes = Regulation::select('type')->whereNotNull('type')->where('type', '!=', '')->distinct()->orderBy('type', 'asc')->pluck('type')->toArray();
         $filterLawFields = Regulation::select('law_field')->distinct()->whereNotNull('law_field')->pluck('law_field');
 
         return view('stats', compact('data', 'filterYears', 'filterDocTypes', 'filterTypes', 'filterLawFields'));

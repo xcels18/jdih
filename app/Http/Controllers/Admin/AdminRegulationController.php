@@ -139,6 +139,7 @@ class AdminRegulationController extends Controller
             'promulgation_date' => 'nullable|date',
             'status' => 'required|in:active,revoked,amended',
             'description' => 'nullable|string',
+            'external_pdf_url' => 'nullable|url',
             'file' => 'nullable|mimes:pdf|max:20480', // max 20MB
             'teu' => 'required|string',
             'law_field' => 'required|string',
@@ -164,6 +165,7 @@ class AdminRegulationController extends Controller
             'promulgation_date' => $request->promulgation_date,
             'status' => $request->status,
             'description' => $request->description,
+            'external_pdf_url' => $request->external_pdf_url,
             'file_path' => $filePath,
             'teu' => $request->teu,
             'law_field' => $request->law_field,
@@ -231,6 +233,7 @@ class AdminRegulationController extends Controller
             'promulgation_date' => 'nullable|date',
             'status' => 'required|in:active,revoked,amended',
             'description' => 'nullable|string',
+            'external_pdf_url' => 'nullable|url',
             'file' => 'nullable|mimes:pdf|max:20480',
             'teu' => 'required|string',
             'law_field' => 'required|string',
@@ -264,6 +267,7 @@ class AdminRegulationController extends Controller
             'promulgation_date' => $request->promulgation_date,
             'status' => $request->status,
             'description' => $request->description,
+            'external_pdf_url' => $request->external_pdf_url,
             'teu' => $request->teu,
             'law_field' => $request->law_field,
             'gov_affairs' => $request->gov_affairs,
@@ -323,5 +327,107 @@ class AdminRegulationController extends Controller
         $regulation->delete();
 
         return redirect()->route('admin.regulations.index')->with('success', 'Regulasi berhasil dihapus.');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'csv_file' => 'required|file|mimes:csv,txt|max:10240', // max 10MB
+        ]);
+
+        $file = $request->file('csv_file');
+        $handle = fopen($file->getRealPath(), 'r');
+        $header = true;
+
+        $count = 0;
+        while ($csvLine = fgetcsv($handle, 4000, ',')) {
+            if ($header) {
+                $header = false;
+                continue;
+            }
+
+            // Based on user's CSV format:
+            // 0: No, 1: Judul Singkat, 2: Tipe Dokumen, 3: Bentuk, 4: Bentuk Singkat, 
+            // 5: Nomor, 6: Tahun, 7: T.E.U., 8: Judul Lengkap, 9: Tempat Penetapan, 
+            // 10: Tanggal Penetapan, 11: Tanggal Pengundangan, 12: Tanggal Berlaku, 
+            // 13: Sumber, 14: Subjek, 15: Bidang, 16: Lokasi, 17: Status, 18: Bahasa, 
+            // 19: Abstrak, 20: Link PDF, 21: URL Detail, 22: Halaman Sumber
+            
+            if (count($csvLine) >= 20) { // At least up to Link PDF (index 20)
+                // Default 'title' to Judul Singkat if Judul Lengkap is empty
+                $title = trim($csvLine[8]) ?: trim($csvLine[1]);
+                if (empty($title)) {
+                    continue; // skip if no title
+                }
+
+                // Format dates
+                $stipulationDate = $this->parseIndonesianDate($csvLine[10]);
+                $promulgationDate = $this->parseIndonesianDate($csvLine[11]);
+                
+                // Status mapping
+                $statusRaw = strtolower(trim($csvLine[17]));
+                $status = 'active';
+                if (str_contains($statusRaw, 'tidak berlaku') || str_contains($statusRaw, 'dicabut')) {
+                    $status = 'revoked';
+                } elseif (str_contains($statusRaw, 'diubah')) {
+                    $status = 'amended';
+                }
+
+                Regulation::create([
+                    'type' => trim($csvLine[3]) ?: 'Peraturan',
+                    'document_type' => trim($csvLine[2]) ?: 'Peraturan Perundang-undangan',
+                    'number' => trim($csvLine[5]) ?: '-',
+                    'publishing_place' => trim($csvLine[9]) ?: 'Tidak Tersedia',
+                    'year' => (int)trim($csvLine[6]) ?: date('Y'),
+                    'title' => $title,
+                    'stipulation_date' => $stipulationDate ?: date('Y-m-d'),
+                    'promulgation_date' => $promulgationDate,
+                    'status' => $status,
+                    'teu' => trim($csvLine[7]) ?: 'Tidak Tersedia',
+                    'law_field' => trim($csvLine[15]) ?: 'Tidak Tersedia',
+                    'subject' => trim($csvLine[14]) ?: 'Tidak Tersedia',
+                    'description' => trim($csvLine[19]),
+                    'external_pdf_url' => isset($csvLine[20]) && filter_var(trim($csvLine[20]), FILTER_VALIDATE_URL) ? trim($csvLine[20]) : null,
+                ]);
+                $count++;
+            }
+        }
+        fclose($handle);
+
+        return redirect()->back()->with('success', $count . ' regulasi berhasil diimpor.');
+    }
+
+    private function parseIndonesianDate($dateString)
+    {
+        $dateString = trim($dateString);
+        if (empty($dateString)) return null;
+
+        $months = [
+            'Januari' => '01', 'Februari' => '02', 'Maret' => '03', 'April' => '04', 
+            'Mei' => '05', 'Juni' => '06', 'Juli' => '07', 'Agustus' => '08', 
+            'September' => '09', 'Oktober' => '10', 'November' => '11', 'Desember' => '12'
+        ];
+
+        foreach ($months as $id => $num) {
+            if (stripos($dateString, $id) !== false) {
+                $dateString = str_ireplace($id, $num, $dateString);
+                break;
+            }
+        }
+
+        try {
+            // Expected format e.g., "19 01 2026"
+            $parts = preg_split('/\s+/', $dateString);
+            if (count($parts) >= 3) {
+                $day = str_pad((int)$parts[0], 2, '0', STR_PAD_LEFT);
+                $month = str_pad((int)$parts[1], 2, '0', STR_PAD_LEFT);
+                $year = (int)$parts[2];
+                return "$year-$month-$day";
+            }
+        } catch (\Exception $e) {
+            return null;
+        }
+
+        return null;
     }
 }

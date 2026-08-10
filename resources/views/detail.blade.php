@@ -18,6 +18,17 @@
     }
 
 </style>
+@php
+    $pdfUrl = $regulation->file_path ? asset('storage/' . $regulation->file_path) : $regulation->external_pdf_url;
+    
+    if ($regulation->file_path) {
+        $previewUrl = asset('storage/' . $regulation->file_path);
+    } elseif ($regulation->external_pdf_url) {
+        $previewUrl = 'https://docs.google.com/viewer?url=' . urlencode($regulation->external_pdf_url) . '&embedded=true';
+    } else {
+        $previewUrl = null;
+    }
+@endphp
 
 <!-- Main Wrapper (pt-16 for navbar padding) -->
 <div class="flex max-w-[1280px] mx-auto w-full min-h-screen bg-bg-base">
@@ -98,14 +109,17 @@
 
                     <!-- Action Bar -->
                     <div class="flex flex-wrap items-center gap-2.5 mt-2 pt-4 border-t border-slate-100">
-                        @if($regulation->file_path)
-                            <a href="{{ route('regulation.download', $regulation->id) }}" target="_blank" class="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-container text-white text-xs font-bold px-4 py-2.5 rounded-xl hover:opacity-95 transition shadow-sm">
+                        @if($regulation->file_path || $regulation->external_pdf_url)
+                            @php
+                                $pdfUrl = $regulation->file_path ? asset('storage/' . $regulation->file_path) : $regulation->external_pdf_url;
+                            @endphp
+                            <a href="{{ $regulation->file_path ? route('regulation.download', $regulation->id) : $pdfUrl }}" target="_blank" class="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-container text-white text-xs font-bold px-4 py-2.5 rounded-xl hover:opacity-95 transition shadow-sm">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
                                 </svg>
-                                Unduh PDF
+                                {{ $regulation->file_path ? 'Unduh PDF' : 'Buka PDF Eksternal' }}
                             </a>
-                            <a href="{{ asset('storage/' . $regulation->file_path) }}" target="_blank" class="inline-flex items-center justify-center gap-2 bg-secondary hover:bg-secondary/90 text-white text-xs font-bold px-4 py-2.5 rounded-xl hover:opacity-95 transition shadow-sm">
+                            <a href="{{ $previewUrl }}" target="_blank" class="inline-flex items-center justify-center gap-2 bg-secondary hover:bg-secondary/90 text-white text-xs font-bold px-4 py-2.5 rounded-xl hover:opacity-95 transition shadow-sm">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
@@ -113,12 +127,21 @@
                                 Pratinjau PDF
                             </a>
                         @endif
-                        <button onclick="window.print()" class="inline-flex items-center justify-center gap-2 bg-white border border-border-subtle text-on-surface text-xs font-bold px-4 py-2.5 rounded-xl hover:bg-slate-50 transition-colors">
+                        @if($regulation->file_path)
+                        <button onclick="printPdf('{{ asset('storage/' . $regulation->file_path) }}')" class="inline-flex items-center justify-center gap-2 bg-white border border-border-subtle text-on-surface text-xs font-bold px-4 py-2.5 rounded-xl hover:bg-slate-50 transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor" class="w-4 h-4 text-slate-500">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.844 2.44 9.564a2.25 2.25 0 0 1 0-3.18l4.28-4.28a2.25 2.25 0 0 1 3.18 0l4.28 4.28a2.25 2.25 0 0 1 0 3.18l-4.28 4.28a2.25 2.25 0 0 1-3.18 0ZM19.5 12a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
                             </svg>
                             Cetak
                         </button>
+                        @elseif($regulation->external_pdf_url)
+                        <a href="{{ $regulation->external_pdf_url }}" target="_blank" class="inline-flex items-center justify-center gap-2 bg-white border border-border-subtle text-on-surface text-xs font-bold px-4 py-2.5 rounded-xl hover:bg-slate-50 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor" class="w-4 h-4 text-slate-500">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                            </svg>
+                            Buka Eksternal
+                        </a>
+                        @endif
                         <button onclick="navigator.clipboard.writeText('{{ $regulation->title }}')" class="inline-flex items-center justify-center gap-2 bg-white border border-border-subtle text-on-surface text-xs font-bold px-4 py-2.5 rounded-xl hover:bg-slate-50 transition-colors md:ml-auto">
                             Salin Judul
                         </button>
@@ -210,9 +233,9 @@
 
                         <!-- TAB 2: ISI PDF -->
                         <div id="tab-detail-isi" class="tab-detail-content hidden space-y-4">
-                            @if($regulation->file_path)
+                            @if($previewUrl)
                                 <div class="w-full h-[550px] border border-slate-200 rounded-xl overflow-hidden bg-slate-100 shadow-inner">
-                                    <iframe src="{{ asset('storage/' . $regulation->file_path) }}" class="w-full h-full" frameborder="0"></iframe>
+                                    <iframe src="{{ $previewUrl }}" class="w-full h-full" frameborder="0"></iframe>
                                 </div>
                                 <p class="text-[10px] text-center text-slate-450 font-medium">
                                     Dokumen ini dibaca sebanyak <span class="text-primary font-bold">{{ $regulation->view_count }} kali</span> dan diunduh <span class="text-primary font-bold">{{ $regulation->download_count }} kali</span>.
@@ -223,7 +246,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12" />
                                     </svg>
                                     <p class="text-xs font-bold text-slate-700">Salinan dokumen PDF belum diunggah.</p>
-                                    <p class="text-[10px] text-slate-400 mt-1">Gunakan panel admin untuk melakukan unggah berkas resmi.</p>
+                                    <p class="text-[10px] text-slate-400 mt-1">Gunakan panel admin untuk melakukan unggah berkas resmi atau menautkan link eksternal.</p>
                                 </div>
                             @endif
                         </div>
@@ -415,6 +438,20 @@
         var activeBtn = document.getElementById('tab-btn-' + tabId);
         activeBtn.classList.add('text-primary', 'border-primary');
         activeBtn.classList.remove('text-on-surface-variant', 'border-transparent');
+    }
+
+    // Print PDF logic
+    function printPdf(url) {
+        var iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.src = url;
+        document.body.appendChild(iframe);
+        iframe.onload = function() {
+            setTimeout(function() {
+                iframe.contentWindow.focus();
+                iframe.contentWindow.print();
+            }, 500);
+        };
     }
 </script>
 @endsection

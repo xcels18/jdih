@@ -164,6 +164,15 @@
                             <span class="text-[10px] text-slate-500 block">PDF Maksimal 20MB</span>
                         </div>
 
+                        <div class="mt-4 border-t border-slate-100 pt-4">
+                            <label for="external_pdf_url" class="block text-[10px] font-extrabold uppercase tracking-widest text-slate-500 mb-2">Atau Gunakan Link PDF Eksternal</label>
+                            <input type="url" name="external_pdf_url" id="external_pdf_url" value="{{ old('external_pdf_url', $regulation->external_pdf_url ?? '') }}" class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-xl focus:ring-primary focus:border-primary block p-3 transition shadow-sm placeholder:text-slate-400" placeholder="https://contoh.com/dokumen.pdf">
+                            @error('external_pdf_url')
+                                <p class="mt-1.5 text-[10px] font-bold text-rose-500">{{ $message }}</p>
+                            @enderror
+                            <p class="mt-1 text-[9px] text-slate-500">Gunakan link ini jika Anda tidak memiliki file PDF untuk diunggah.</p>
+                        </div>
+
                         <!-- Selected File Status Info Box -->
                         <div id="file-info-box" class="hidden p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl flex items-start gap-2.5 text-xs text-emerald-800">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5">
