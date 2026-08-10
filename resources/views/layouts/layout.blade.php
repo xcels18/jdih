@@ -56,7 +56,17 @@
             <div class="flex items-center gap-4">
                 @auth
                     <a href="{{ route('admin.regulations.index') }}" class="text-[10px] font-extrabold uppercase tracking-wider text-primary hover:text-primary-container py-2 px-5 border border-primary/20 rounded-full bg-primary/5 hover:bg-primary/10 transition">Dashboard</a>
-                    <a href="{{ route('admin.reports.index') }}" class="text-[10px] font-extrabold uppercase tracking-wider text-on-surface-variant hover:text-primary transition py-2.5 px-3 {{ Route::is('admin.reports.index') ? 'text-primary font-black' : '' }}">Laporan</a>
+                    <a href="{{ route('admin.reports.index') }}" class="relative text-[10px] font-extrabold uppercase tracking-wider text-on-surface-variant hover:text-primary transition py-2.5 px-3 {{ Route::is('admin.reports.index') ? 'text-primary font-black' : '' }}">
+                        Laporan
+                        @php
+                            $pendingReports = \App\Models\Report::where('status', 'pending')->count();
+                        @endphp
+                        @if($pendingReports > 0)
+                            <span class="absolute top-0 right-1 inline-flex items-center justify-center min-w-[14px] h-[14px] text-[8px] font-bold text-white bg-red-500 rounded-full px-1 shadow-sm">
+                                {{ $pendingReports }}
+                            </span>
+                        @endif
+                    </a>
                     <a href="{{ route('admin.settings') }}" class="text-[10px] font-extrabold uppercase tracking-wider text-on-surface-variant hover:text-primary transition py-2 px-2 {{ Route::is('admin.settings') ? 'text-primary font-black' : '' }}">Profil</a>
                     <form action="{{ route('logout') }}" method="POST" class="inline">
                         @csrf
