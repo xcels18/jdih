@@ -11,6 +11,11 @@ class Regulation extends Model
         'document_type', 'publishing_place', 'promulgation_date', 'gov_affairs', 'view_count', 'download_count', 'external_pdf_url'
     ];
 
+    protected $casts = [
+        'stipulation_date' => 'date',
+        'promulgation_date' => 'date',
+    ];
+
     public function relations()
     {
         return $this->hasMany(RegulationRelation::class, 'regulation_id');
